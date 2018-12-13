@@ -9,7 +9,7 @@ var http = require('http');
 var tokens = db.JSON().tokens || {};
 var doc = db.JSON().doc || {};
 
-var passstring = require('password.json');
+var passstring = require('./password.json');
 
 function updateDb() {
    var d = db.JSON();
@@ -102,7 +102,7 @@ app.get('/verifyToken', function(req,res) {
 })
 
 app.get('/', function(req,res) {
-    res.sendFile(__appdir + '/index.html');
+    res.sendFile(__dirname + '/index.html');
 });
 
 var server = app.listen(5557, function() {
