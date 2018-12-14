@@ -235,6 +235,7 @@ req.onload = function() {
 req.open("POST", "/submit");
 
 req.setRequestHeader("Authorization", localStorage.getItem('auth'));
+req.setRequestHeader("Content-Type", "application/json");
 
 req.send(JSON.stringify({d: x}));
 }
