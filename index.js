@@ -24,23 +24,28 @@ app.use(bodyParser.json());
 
 app.get('/token', function (req,res) {
     if(req.headers.authorization == passstring) {
-        var tkn = (function(i,p,r,l) {
-            p = '1234567890ABCDEFGHIJKLMNOPabcdefghijklmnopqrstuvwxyz._-'
-            r = ""
-            for( i = 0; i < 20; i++) {
-                r = r + p[Math.floor( p.length * Math.random())]
-            }
-            
-            while(tokens[r]) {
-              r = ''
-              for( i = 0; i < 20; i++) {
-                  r = r + p[Math.floor( p.length * Math.random())]
-              }
-            }
-            return r
-            
-        })(); 
-        
+		var ifIndex = Object.values(tokens).indexOf(req.query.name);
+		var tkn;
+		if(ifIndex == -1) {
+			tkn = (function(i,p,r,l) {
+				p = '1234567890ABCDEFGHIJKLMNOPabcdefghijklmnopqrstuvwxyz._-'
+				r = ""
+				for( i = 0; i < 20; i++) {
+					r = r + p[Math.floor( p.length * Math.random())]
+				}
+				
+				while(tokens[r]) {
+				  r = ''
+				  for( i = 0; i < 20; i++) {
+					  r = r + p[Math.floor( p.length * Math.random())]
+				  }
+				}
+				return r
+				
+			})(); 
+        } else {
+		    tkn = Object.keys(tokens)[ifIndex]
+		}
         tokens[tkn] = req.query.name
         res.send(tkn);
         updateDb();
