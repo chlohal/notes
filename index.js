@@ -39,10 +39,10 @@ app.get('/token', function (req,res) {
         }); 
         
         tokens[tkn] = req.query.name
-        resp.send(tkn);
+        res.send(tkn);
         updateDb();
     } else {
-       req.sendStatus(403);
+       res.sendStatus(403);
     }
 
 });
@@ -54,7 +54,7 @@ app.get('/docs', function(req,res) {
           res.send(docArr.sort(function(a,b) {return a.date - b.date}).slice((req.query.a || 0),((req.query.a || 0) + 100)));
       }
     } else {
-       req.sendStatus(403);
+       res.sendStatus(403);
     }
 });
 
@@ -84,19 +84,19 @@ app.post('/submit', function (req,res) {
         })();
         
         doc[docid] = request.body
-        req.sendStatus(201);
+        res.sendStatus(201);
         updateDb();
     } else {
-       req.sendStatus(403);
+       res.sendStatus(403);
     }
     
 });
 
 app.get('/verifyToken', function(req,res) {
     if(tokens[req.headers.authorization]) {
-        req.sendStatus(200);
+        res.sendStatus(200);
     } else {
-       req.sendStatus(403);
+       res.sendStatus(403);
     }
 
 })
