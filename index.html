@@ -236,7 +236,7 @@ req.open("POST", "/submit");
 
 req.setRequestHeader("Authorization", localStorage.getItem('auth'));
 
-req.send({d: x});
+req.send(JSON.stringify({d: x}));
 }
 
 function reload(x) {
