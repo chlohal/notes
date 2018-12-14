@@ -241,6 +241,9 @@ req.send(JSON.stringify({d: x}));
 }
 
 function reload(x) {
+
+var req = new XMLHttpRequest();
+
 req.onload = function() {
  if(req.status == 200) {
      var uploadList = document.querySelector('.postlist');
@@ -254,6 +257,7 @@ req.onload = function() {
 	 uploadList.innerHTML = eventualHtml;
  }
 }
+
 req.open("GET", "/docs?t=type&n=50&d=" (function(d) { return ( new Date ( Date.now() ) ).setHours(0,0,0,0) })() + "&a=" + currentIndex );
 
 req.setRequestHeader("Authorization", localStorage.getItem('auth'));
