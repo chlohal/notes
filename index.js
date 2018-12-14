@@ -3,6 +3,7 @@ var db = new JSONDB('db.json');
 
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser');
 var https = require('https');
 var http = require('http');
 
@@ -18,6 +19,8 @@ function updateDb() {
    db.JSON(d);
    db.sync()
 }
+
+app.use(bodyParser.json());
 
 app.get('/token', function (req,res) {
     if(req.headers.authorization == passstring) {
@@ -60,7 +63,8 @@ app.get('/docs', function(req,res) {
 
 app.post('/submit', function (req,res) {
     if(tokens[req.headers.authorization]) {
-        
+        if(!req.body) { return } 
+		
         req.body.author = tokens[req.headers.authorization]
         req.body.date = Date.now();
         
