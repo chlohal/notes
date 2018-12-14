@@ -65,6 +65,8 @@ app.post('/submit', function (req,res) {
     if(tokens[req.headers.authorization]) {
         if(!req.body) { return } 
 		
+		console.log(req.body);
+		
         req.body.author = tokens[req.headers.authorization]
         req.body.date = Date.now();
         
