@@ -36,7 +36,7 @@ app.get('/token', function (req,res) {
             }
             return r
             
-        }); 
+        })(); 
         
         tokens[tkn] = req.query.name
         res.send(tkn);
