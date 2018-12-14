@@ -68,7 +68,7 @@ app.post('/submit', function (req,res) {
         
         nDate = nDate.toUTCString();
         
-        request.body.from = tokens[req.getHeader('Authorization')]
+        request.body.author = tokens[req.getHeader('Authorization')]
         request.body.date = nDate.getTime();
         
         var docid = (function(d,t) {

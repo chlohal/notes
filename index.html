@@ -1,6 +1,124 @@
 <html>
 <head>
+<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+<style>
+body {
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    font-family: 'Oswald', sans-serif;
+}
+* {
+    box-sizing: border-box;
+}
+#top {
+    position: absolute;
+    height: 10vh;
+    width: 100vw;
+    border-bottom: 10px solid #92D190;
+    top: 0px;
+    background-color: #f5f5f5;
+    -webkit-box-shadow: 0px 1px 2px 0px rgba(156,175,183,1);
+    -moz-box-shadow: 0px 1px 2px 0px rgba(156,175,183,1);
+    box-shadow: 0px 1px 2px 0px rgba(156,175,183,1);
+    z-index: 100;
+}
+#content {
+    width: 100vw;
+    height: 90vw;
+    position: absolute;
+    top: 10vh;
+}
+#login {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+}
+#login > .login-in {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    animation: fall-in 0.2s;
+    position: relative;
+    background: #f5f5f5;
+    padding: 4em;
+    animation: fall-in 0.3s;
+    border-radius: 10px;
+    box-shadow: 0px 2px 0px 2px #92D190;
+}
+.login-in > * {
+    display: block;
+    margin: 10px;
+}
+.login-hidden {
+    animation: fade-out 0.2s;
+    opacity: 0;
+}
+button {
+    background: #00000033;
+    border: none;
+    padding: 0.5em;
+    cursor: pointer;
+    border-radius: 1px;
+}
+@keyframes fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+@keyframes fall-in {
+    from {top: -200vh; opacity: 0; }
+    to {top: 0px; opacity: 1; }
+}
+</style>
+<script>
+function loginReq(x,y) {
+if(!x || !y) { return }
+var req = new XMLHttpRequest();
+
+req.onload = function() {
+ if(req.status == 200) {
+     localStorage.setItem("auth", req.responseText);
+     document.getElementById("login").classList.add("login-hidden");
+ }
+}
+req.open("GET", "/token?name=" + encodeURIComponent(y));
+
+req.setRequestHeader("Authorization", x);
+
+req.send();
+}
+function submit(x) {
+var req = new XMLHttpRequest();
+
+req.onload = function() {
+ if(req.status == 200) {
+     //get it
+ }
+}
+req.open("POST", "/submit");
+
+req.setRequestHeader("Authorization", localStorage.getItem('auth'));
+
+req.send({content: x});
+}
+</script>
 </head>
 <body>
-[WIP]
+<div id="top">
+</div>
+<div id="content">
+<div id="login">
+<div class="login-in">
+<h1>Log In</h1>
+<input placeholder="Name" id="nameLoginInput">
+<input type="password" id="pwLoginInput" onkeyup="if(event.keyCode == 13) { loginReq(document.getElementById('nameLoginInput').value, document.getElementById('pwLoginInput').value) }" placeholder="Password">
+<button onclick="loginReq(document.getElementById('nameLoginInput').value, document.getElementById('pwLoginInput').value)">
+Submit
+</button>
+</div>
+</div>
+</div>
 </body>
