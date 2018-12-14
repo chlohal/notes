@@ -20,7 +20,7 @@ function updateDb() {
 }
 
 app.get('/token', function (req,res) {
-    if(req.headers,authorization == passstring) {
+    if(req.headers.authorization == passstring) {
         var tkn = (function(i,p,r,l) {
             p = '1234567890ABCDEFGHIJKLMNOPabcdefghijklmnopqrstuvwxyz._-'
             r = ""
@@ -48,7 +48,7 @@ app.get('/token', function (req,res) {
 });
 
 app.get('/docs', function(req,res) {
-    if(tokens[req.headers,authorization]) {
+    if(tokens[req.headers.authorization]) {
       var docArr = Object.values(doc);
       if(req.query.t == 'time') {
           res.send(docArr.sort(function(a,b) {return a.date - b.date}).slice((req.query.a || 0),((req.query.a || 0) + 100)));
@@ -59,7 +59,7 @@ app.get('/docs', function(req,res) {
 });
 
 app.post('/submit', function (req,res) {
-    if(tokens[req.headers,authorization]) {
+    if(tokens[req.headers.authorization]) {
         var nDate = Date(Date.now());
         nDate.setUTCHours(0);
         nDate.setUTCMinutes(0);
@@ -93,7 +93,7 @@ app.post('/submit', function (req,res) {
 });
 
 app.get('/verifyToken', function(req,res) {
-    if(tokens[req.headers,authorization]) {
+    if(tokens[req.headers.authorization]) {
         req.sendStatus(200);
     } else {
        req.sendStatus(403);
