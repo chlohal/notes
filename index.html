@@ -64,6 +64,12 @@ button {
     cursor: pointer;
     border-radius: 1px;
 }
+a:link {
+    color: #7AAD74;
+}
+a:visited {
+    color: #62935B;
+}
 @keyframes fade-out {
     from { opacity: 1; }
     to { opacity: 0; }
@@ -72,9 +78,10 @@ button {
     from {top: -200vh; opacity: 0; }
     to {top: 0px; opacity: 1; }
 }
+
 </style>
 <script>
-function loginReq(x,y) {
+function loginReq(y,x) {
 if(!x || !y) { return }
 var req = new XMLHttpRequest();
 
@@ -118,6 +125,7 @@ req.send({content: x});
 <button onclick="loginReq(document.getElementById('nameLoginInput').value, document.getElementById('pwLoginInput').value)">
 Submit
 </button>
+<p><i>Don't know your login? <a href="mailto:coleh@coleh.net">Email me</a></i></p>
 </div>
 </div>
 </div>
