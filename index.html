@@ -258,7 +258,7 @@ req.onload = function() {
  }
 }
 
-req.open("GET", "/docs?t=type&n=50&d=" (function(d) { return ( new Date ( Date.now() ) ).setHours(0,0,0,0) })() + "&a=" + currentIndex );
+req.open("GET", "/docs?t=type&n=50&d=" + (function(d) { return ( new Date ( Date.now() ) ).setHours(0,0,0,0) })() + "&a=" + currentIndex );
 
 req.setRequestHeader("Authorization", localStorage.getItem('auth'));
 
