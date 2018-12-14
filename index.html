@@ -241,6 +241,7 @@ req.send(JSON.stringify({d: x}));
 }
 
 function reload(x) {
+req.onload = function() {
  if(req.status == 200) {
      var uploadList = document.querySelector('.postlist');
 	 var parsedResp = JSON.parse(req.responseText);
