@@ -165,6 +165,7 @@ input:checked + svg {
 .login-hidden {
     animation: fade-out 0.2s;
     opacity: 0;
+	display: none;
 }
 button {
     background: #00000033;
@@ -188,8 +189,8 @@ input[type=radio] {
 	visibility: hidden !important;
 }
 @keyframes fade-out {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from { opacity: 1; display: block;}
+    to { opacity: 0; display: block;}
 }
 @keyframes fall-in {
     from {top: -200vh; opacity: 0; }
