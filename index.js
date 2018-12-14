@@ -61,8 +61,8 @@ app.get('/docs', function(req,res) {
 app.post('/submit', function (req,res) {
     if(tokens[req.headers.authorization]) {
         
-        request.body.author = tokens[req.headers.authorization]
-        request.body.date = Date.now();
+        req.body.author = tokens[req.headers.authorization]
+        req.body.date = Date.now();
         
         var docid = (function(d,t) {
             d = Date.now();
@@ -76,7 +76,7 @@ app.post('/submit', function (req,res) {
         
         })();
         
-        doc[docid] = request.body
+        doc[docid] = req.body
         res.sendStatus(201);
         updateDb();
     } else {
