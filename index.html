@@ -241,7 +241,23 @@ req.send(JSON.stringify({d: x}));
 }
 
 function reload(x) {
-    console.log('reload');
+ if(req.status == 200) {
+     var uploadList = document.querySelector('.postlist');
+	 var parsedResp = JSON.parse(req.responseText);
+	 var eventualHtml = "";
+	 
+	 parsedResp.forEach(x => {
+	     eventualHtml = eventualHtml + "<div><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.replace(/</g,'&lt;').replace(/>/g,'&gt;') + "</div><div> Summary: " + x.d.content.replace(/</g,'&lt;').replace(/>/g,'&gt;') + "</div></div>"
+	 });
+	 
+	 uploadList.innerHTML = eventualHtml;
+ }
+}
+req.open("GET", "/docs?t=type&n=50&d=" (function(d) { return ( new Date ( Date.now() ) ).setHours(0,0,0,0) })() + "&a=" + currentIndex );
+
+req.setRequestHeader("Authorization", localStorage.getItem('auth'));
+
+req.send();
 }
 </script>
 </head>
