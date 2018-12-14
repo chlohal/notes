@@ -207,7 +207,7 @@ req.onload = function() {
  if(req.status == 200) {
      localStorage.setItem("auth", req.responseText);
      document.getElementById("login").classList.add("login-hidden");
-     document.querySelector('content-logged-in').classList.remove("out");
+     document.querySelector('.content-logged-in').classList.remove("out");
  }
 }
 req.open("GET", "/token?name=" + encodeURIComponent(y));
