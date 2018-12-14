@@ -59,8 +59,10 @@ app.get('/docs', function(req,res) {
     if(tokens[req.headers.authorization]) {
       var docArr = Object.values(doc);
       if(req.query.t == 'time') {
-          res.send(docArr.sort(function(a,b) {return a.date - b.date}).filter(x => { return x.date >= ( req.query.t || 0 ) }).slice((req.query.a || 0),((req.query.a || 0) + 100)));
-      }
+          res.send(docArr.sort(function(a,b) {return a.date - b.date}).filter(x => { return x.date >= ( req.query.d || 0 ) }).slice((req.query.a || 0),((req.query.a || 0) + (req.query.n || 100))));
+      } else {
+		  res.sendStatus(400);
+	  }
     } else {
        res.sendStatus(403);
     }
