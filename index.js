@@ -88,7 +88,9 @@ app.post('/submit', function (req,res) {
             return d + "" + t
         
         })();
-        
+		
+        req.body.id = docid
+		
         doc[docid] = req.body
         res.sendStatus(201);
         updateDb();

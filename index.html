@@ -206,7 +206,7 @@ input[type=radio] {
 </style>
 
 <script>
-var currentIndex = 0;
+var currentIndex = 0, totalDocs = [];
 function loginReq(y,x) {
 if(!x || !y) { return }
 var req = new XMLHttpRequest();
@@ -251,6 +251,7 @@ req.onload = function() {
 	 var eventualHtml = "";
 	 
 	 parsedResp.forEach(x => {
+	     totalDocs.puish(x);
 	     eventualHtml = eventualHtml + "<div><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.replace(/</g,'&lt;').replace(/>/g,'&gt;') + "</div><div> Summary: " + x.d.content.replace(/</g,'&lt;').replace(/>/g,'&gt;') + "</div></div>"
 	 });
 	 
