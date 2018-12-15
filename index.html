@@ -254,7 +254,7 @@ req.onload = function() {
 	     eventualHtml = eventualHtml + "<div><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.replace(/</g,'&lt;').replace(/>/g,'&gt;') + "</div><div> Summary: " + x.d.content.replace(/</g,'&lt;').replace(/>/g,'&gt;') + "</div></div>"
 	 });
 	 
-	 currentIndex = parsedResp.length
+	 //currentIndex = parsedResp.length
 	 
 	 uploadList.innerHTML = eventualHtml;
  }
