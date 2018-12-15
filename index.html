@@ -252,6 +252,9 @@ req.onload = function() {
 	 
 	 parsedResp.forEach(x => {
 	     totalDocs[x.id] = x
+	 });
+	 
+	 Object.values(totalDocs).sort(function(a,b) {return b.date - a.date}).forEach(x => {
 	     eventualHtml = eventualHtml + "<div><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.replace(/</g,'&lt;').replace(/>/g,'&gt;') + "</div><div> Summary: " + x.d.content.replace(/</g,'&lt;').replace(/>/g,'&gt;') + "</div></div>"
 	 });
 	 
