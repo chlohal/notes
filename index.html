@@ -254,6 +254,7 @@ req.onload = function() {
      document.getElementById("login").classList.add("login-hidden");
      document.querySelector('.content-logged-in').classList.remove("out");
      document.querySelector('#top-in').classList.remove("out");
+	 reload(0);
  }
 }
 req.open("GET", "/token?name=" + encodeURIComponent(y));
