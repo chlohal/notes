@@ -353,6 +353,23 @@ function hideModal () {
 	document.querySelector('.modal').classList.add('out');
 	modalOpen = false;
 }
+
+function snackbar(text) {
+    
+}
+
+//from http://jsfiddle.net/jdhenckel/km7prgv4/3
+function copyToClip(str,notify) {
+  function listener(e) {
+    e.clipboardData.setData("text/html", str);
+    e.preventDefault();
+	if(notify) { snackbar('Data copied!') }
+  }
+  document.addEventListener("copy", listener);
+  document.execCommand("copy");
+  document.removeEventListener("copy", listener);
+};
+
 </script>
 </head>
 <body>
@@ -410,7 +427,7 @@ Send
 <div class="postlist">
 </div>
 <div class="modal out">
-<div><button>Copy Table</button></div>
+<div><a href="javascript:void(0)" onclick="copyToClip(document.getElementById('output-preview').innerHTML, true)">Copy Table</a> <br>After copying, you can simply paste (CTRL + V) into Google Docs!</div>
 
 <div id="output-preview"></div>
 </div>
