@@ -433,4 +433,14 @@ Send
 </div>
 </div>
 </div>
-</body><span class="gr__tooltip"><span class="gr__tooltip-content"></span><i class="gr__tooltip-logo"></i><span class="gr__triangle"></span></span></html>
+<script>
+
+     if(localStorage.getItem("auth")) {
+     document.getElementById("login").classList.add("login-hidden");
+     document.querySelector('.content-logged-in').classList.remove("out");
+     document.querySelector('#top-in').classList.remove("out");
+	 reload(0);
+	 }
+</script>
+</body>
+</html>
