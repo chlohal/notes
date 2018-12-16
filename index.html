@@ -197,6 +197,7 @@ input[type=radio] {
     flex-direction: column;
     align-items: center;
     animation: fall-in 0.3s;
+	overflow-y: auto;
 }
 .modal > div {
     display: flex; 
@@ -314,6 +315,7 @@ function downloadParse() {
 
     document.querySelector('.output-button > svg').style.background = '#000000'
     document.querySelector('.output-button > svg').style.fill = '#ffffff'
+	document.querySelector('.content-logged-in').style.overflowY = 'hidden'
     var container = document.querySelector('.modal');
 	container.classList.remove('out');
     modalOpen = true
@@ -347,6 +349,7 @@ function downloadParse() {
 function hideModal () {
     document.querySelector('.output-button > svg').style.background = 'transparent'
     document.querySelector('.output-button > svg').style.fill = '#000000'
+    document.querySelector('.content-logged-in').style.overflowY = 'auto'
 	document.querySelector('.modal').classList.add('out');
 	modalOpen = false;
 }
