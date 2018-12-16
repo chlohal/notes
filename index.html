@@ -301,6 +301,9 @@ req.onload = function() {
 	 //currentIndex = parsedResp.length
 	 
 	 uploadList.innerHTML = eventualHtml;
+ } else if (req.status == 403) {
+     localStorage.removeItem('auth');
+	 location.reload();
  }
 }
 
