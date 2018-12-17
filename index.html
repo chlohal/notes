@@ -341,7 +341,7 @@ if(req.readyState == 4) {
 	 });
 	 
 	 Object.values(totalDocs).sort(function(a,b) {return b.date - a.date}).forEach(x => {
-	     eventualHtml = eventualHtml + "<div" + (x.author == localStorage.getItem('name'))?' class="my-doc"':'' + "><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.HTML() + "</div><div> Summary: " + x.d.content.HTML() + "</div></div>"
+	     eventualHtml = eventualHtml + "<div" + ((x.author == localStorage.getItem('name'))?' class="my-doc"':'') + "><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.HTML() + "</div><div> Summary: " + x.d.content.HTML() + "</div></div>"
 	 });
 	 
 	 //currentIndex = parsedResp.length
