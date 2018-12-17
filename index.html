@@ -256,21 +256,21 @@ function loginReq(y,x) {
 if(!x || !y) { return }
 var req = new XMLHttpRequest();
 
-req.onload = function() {
+req.onreadystatechange = function() {
+ if(req.readyState == 4) {
  if(req.status == 200) {
      localStorage.setItem("auth", req.responseText);
      document.getElementById("login").classList.add("login-hidden");
      document.querySelector('.content-logged-in').classList.remove("out");
      document.querySelector('#top-in').classList.remove("out");
 	 reload(0);
+ } else if (req.status == 403) {
+     snackbar("Incorrect login information!");
+ }
  }
 }
 
-req.onerror = function() {
-if (req.status == 403) {
-     snackbar("Incorrect login information!");
- }
-}
+
 req.open("GET", "/token?name=" + encodeURIComponent(y));
 
 req.setRequestHeader("Authorization", x);
@@ -297,7 +297,8 @@ function reload(x,timeAt) {
 
 var req = new XMLHttpRequest();
 
-req.onload = function() {
+req.onreadystatechange = function() {
+if(req.readyState == 4) {
  if(req.status == 200) {
      var uploadList = document.querySelector('.postlist');
 	 var parsedResp = JSON.parse(req.responseText);
@@ -314,14 +315,15 @@ req.onload = function() {
 	 //currentIndex = parsedResp.length
 	 
 	 uploadList.innerHTML = eventualHtml;
+ } else if (req.status == 403) {
+     localStorage.removeItem('auth');
+	 location.reload();
+ }
  }
 }
 
 req.onerror = function() {
-    if (req.status == 403) {
-     localStorage.removeItem('auth');
-	 location.reload();
- }
+    
 }
 
 req.open("GET", "/docs?t=time&n=50&d=" + (function(d) { return timeAt || ( ( new Date ( Date.now() ) ).setHours(0,0,0,0) ) })() + "&a=" + currentIndex );
