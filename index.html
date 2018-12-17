@@ -410,14 +410,16 @@ function snackbar(text,dur,type) {
         "err": "#DD8B8B",
         "war": "#FAB28E"
     }
-    var elem = document.querySelector('.snackbar');
+    var elem = document.createElement('div');
     
+    div.classlist.add('snackbar');
     elem.style.borderColor = colors[type] || colors.suc
     elem.innerHTML = (text || 'There was an error. Please try again.').HTML()
-    elem.classList.remove('out');
+    //elem.classList.remove('out');
+    document.body.appendChild(elem);
     
     setTimeout(function () {
-        elem.classList.add('out');
+        document.body.removeChild(elem);
     }, 5000 || dur);
 }
 
