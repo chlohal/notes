@@ -282,6 +282,7 @@ var req = new XMLHttpRequest();
 req.onreadystatechange = function() {
  if(req.readyState == 4) {
  if(req.status == 200) {
+     localStorage.setItem("name", y);
      localStorage.setItem("auth", req.responseText);
      document.getElementById("login").classList.add("login-hidden");
      document.querySelector('.content-logged-in').classList.remove("out");
@@ -340,7 +341,7 @@ if(req.readyState == 4) {
 	 });
 	 
 	 Object.values(totalDocs).sort(function(a,b) {return b.date - a.date}).forEach(x => {
-	     eventualHtml = eventualHtml + "<div><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.HTML() + "</div><div> Summary: " + x.d.content.HTML() + "</div></div>"
+	     eventualHtml = eventualHtml + "<div" + (x.author == localStorage.getItem('name'))?' class="my-doc"':'' + "><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.HTML() + "</div><div> Summary: " + x.d.content.HTML() + "</div></div>"
 	 });
 	 
 	 //currentIndex = parsedResp.length
@@ -506,7 +507,7 @@ Send
 <div class="modal out">
 <div style="min-height: -webkit-min-content; min-height: -moz-min-content; min-height: min-content;"><h3><a href="javascript:void(0)" onclick="copyToClip(document.getElementById('output-preview').innerHTML, true)">Copy Table</a></h3> <br>After copying, you can simply paste (CTRL + V) into Google Docs!</div>
 
-<div><h3>Preview: </h3><div id="output-preview" style="padding: 10px; border: 1px solid black;"></div></div>
+<div style="min-height: -webkit-min-content; min-height: -moz-min-content; min-height: min-content;"><h3>Preview: </h3><div id="output-preview" style="padding: 10px; border: 1px solid black; background: #ffffff;"></div></div>
 </div>
 </div>
 </div>
