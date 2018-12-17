@@ -273,7 +273,7 @@ String.prototype.HTML = function () {
 
 var currentIndex = 0, totalDocs = {}, modalOpen = false;
 function loginReq(y,x) {
-if(!x || !y) { return snackbar('Please fill all fields!',5000,'war')}
+if(!x || !y) { return snackbar('Please fill all fields!',3000,'war')}
 var req = new XMLHttpRequest();
 
 req.onreadystatechange = function() {
@@ -291,7 +291,7 @@ req.onreadystatechange = function() {
 }
 
 req.onerror = function() {
-    snackbar('There was an error. Try again later',5000,'err');
+    snackbar('There was an error. Try again later',3000,'err');
 }
 
 req.open("GET", "/token?name=" + encodeURIComponent(y));
@@ -310,7 +310,7 @@ req.onload = function() {
 }
 
 req.onerror = function() {
-    snackbar('There was an error. Try again later',5000,'err');
+    snackbar('There was an error. Try again later',3000,'err');
 }
 
 req.open("POST", "/submit");
@@ -351,7 +351,7 @@ if(req.readyState == 4) {
 }
 
 req.onerror = function() {
-    snackbar('There was an error. Try again later',5000,'err');
+    snackbar('There was an error. Try again later',3000,'err');
 }
 
 req.open("GET", "/docs?t=time&n=50&d=" + (function(d) { return timeAt || ( ( new Date ( Date.now() ) ).setHours(0,0,0,0) ) })() + "&a=" + currentIndex );
@@ -410,20 +410,14 @@ function snackbar(text,dur,type) {
         "err": "#DD8B8B",
         "war": "#FAB28E"
     }
-    var elem = document.createElement('div');
+    var elem = document.querySelector('.snackbar');
     
-    document.querySelectorAll('.snackbar').forEach(x => {
-        x.parentElement.removeChild(x)
-    });
-	
-    elem.classList.add('snackbar');
     elem.style.borderColor = colors[type] || colors.suc
     elem.innerHTML = (text || 'There was an error. Please try again.').HTML()
-    //elem.classList.remove('out');
-    document.body.appendChild(elem);
+    elem.classList.remove('out');
     
     setTimeout(function () {
-        document.body.removeChild(elem);
+        elem.classList.add('out');
     }, 5000 || dur);
 }
 
@@ -432,7 +426,7 @@ function copyToClip(str,notify) {
   function listener(e) {
     e.clipboardData.setData("text/html", str);
     e.preventDefault();
-	if(notify) { snackbar('Data copied!',5000,'suc') }
+	if(notify) { snackbar('Data copied!',3000,'suc') }
   }
   document.addEventListener("copy", listener);
   document.execCommand("copy");
@@ -489,7 +483,7 @@ Submit
 <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 1c6.071 0 11 4.929 11 11s-4.929 11-11 11-11-4.929-11-11 4.929-11 11-11zm.053 17c.466 0 .844-.378.844-.845 0-.466-.378-.844-.844-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.468-2.822h-.998c-.035-1.162.182-2.054.939-2.943.491-.57 1.607-1.479 1.945-2.058.722-1.229.077-3.177-2.271-3.177-1.439 0-2.615.877-2.928 2.507l-1.018-.102c.28-2.236 1.958-3.405 3.922-3.405 1.964 0 3.615 1.25 3.615 3.22 0 1.806-1.826 2.782-2.638 3.868-.422.563-.555 1.377-.568 2.09z"></path></svg>
 </label>
 </div>
-<button style="margin-top: 1em;" onclick="try { submit({team: parseInt(document.querySelector('input[name=&quot;what_team&quot;]:checked').value), content: ( document.querySelector('div.send-input').innerHTML || null).repeat(1), names: ( document.querySelector('input.names-submit-input').value || null).repeat(1) }) } catch (e) { snackbar('Please fill all fields!',5000,'war') }">
+<button style="margin-top: 1em;" onclick="try { submit({team: parseInt(document.querySelector('input[name=&quot;what_team&quot;]:checked').value), content: ( document.querySelector('div.send-input').innerHTML || null).repeat(1), names: ( document.querySelector('input.names-submit-input').value || null).repeat(1) }) } catch (e) { snackbar('Please fill all fields!',3000,'war') }">
 Send
 </button>
 </div>
