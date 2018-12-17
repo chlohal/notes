@@ -263,6 +263,8 @@ req.onload = function() {
      document.querySelector('.content-logged-in').classList.remove("out");
      document.querySelector('#top-in').classList.remove("out");
 	 reload(0);
+ } else if (req.staus == 403) {
+     snackbar("Incorrect login information!");
  }
 }
 req.open("GET", "/token?name=" + encodeURIComponent(y));
@@ -365,7 +367,8 @@ function hideModal () {
 }
 
 function snackbar(text) {
-    
+    //i guess, for now, just
+	alert(text);
 }
 
 //from http://jsfiddle.net/jdhenckel/km7prgv4/3
