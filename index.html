@@ -79,12 +79,14 @@ padding: 0.5em;
     display: flex; 
     flex-direction: column;
     align-items: center;
+	flex-wrap: wrap;
     animation: fall-in 0.2s;
 	margin: 1em;
     position: relative;
     background: #f5f5f5;
     padding: 2em;
 	max-width: 80vw;
+	word-wrap: break-word;
 	min-height: -webkit-min-content;
 	min-height: -moz-min-content;
 	min-height: min-content;
@@ -259,7 +261,7 @@ input[type=radio] {
     to {top: 5vh; opacity: 1; }
 }
 
-}
+div { max-width: 100%; word-wrap: break-word; }
 </style>
 
 <script>
