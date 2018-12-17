@@ -263,7 +263,11 @@ req.onload = function() {
      document.querySelector('.content-logged-in').classList.remove("out");
      document.querySelector('#top-in').classList.remove("out");
 	 reload(0);
- } else if (req.staus == 403) {
+ }
+}
+
+req.onerror = function() {
+if (req.staus == 403) {
      snackbar("Incorrect login information!");
  }
 }
@@ -310,7 +314,11 @@ req.onload = function() {
 	 //currentIndex = parsedResp.length
 	 
 	 uploadList.innerHTML = eventualHtml;
- } else if (req.status == 403) {
+ }
+}
+
+req.onerror = function() {
+    if (req.status == 403) {
      localStorage.removeItem('auth');
 	 location.reload();
  }
