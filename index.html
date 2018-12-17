@@ -412,6 +412,10 @@ function snackbar(text,dur,type) {
     }
     var elem = document.createElement('div');
     
+    document.querySelectorAll('.snackbar').forEach(x => {
+        x.parentElement.removeChild(x)
+    });
+	
     elem.classList.add('snackbar');
     elem.style.borderColor = colors[type] || colors.suc
     elem.innerHTML = (text || 'There was an error. Please try again.').HTML()
