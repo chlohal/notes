@@ -410,14 +410,18 @@ function snackbar(text,dur,type) {
         "err": "#DD8B8B",
         "war": "#FAB28E"
     }
-    var elem = document.querySelector('.snackbar');
+    var elem = document.createElement('div');
     
+    document.querySelectorAll('.snackbar').forEach(x => {
+        x.parentElement.removeChild(x);
+    });
+    
+    elem.classList.add('snackbar');
     elem.style.borderColor = colors[type] || colors.suc
-    elem.innerHTML = (text || 'There was an error. Please try again.').HTML()
-    elem.classList.remove('out');
+    elem.innerHTML = (text || 'There was an error. Please try again.').HTML();
     
     setTimeout(function () {
-        elem.classList.add('out');
+        document.body.appendChild(elem);
     }, 5000 || dur);
 }
 
