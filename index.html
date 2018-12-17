@@ -218,6 +218,24 @@ input[type=radio] {
     border-radius: 10px;
     box-shadow: 0px 2px 0px 2px #92D190;
 }
+.snackbar {
+    position: fixed;
+    background: #eeeeee;
+    padding: 1em;
+    z-index: 101;
+    border-radius: 10px;
+    max-width: 80vw;
+    width: 2in;
+    text-align: center;
+    box-shadow: 0px 1px 2px 2px #00000079;
+    animation: fall-in-5vh-offset 0.2s;
+    top: 5vh;
+    border-color: #92D190;
+    border-width: 0px 2px 2px 2px;
+    border-style: solid;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
 #output-preview {
     max-width: 90vw;
 	max-height: 90vh;
@@ -225,8 +243,7 @@ input[type=radio] {
 }
 .out {
     opacity: 0 !important;
-	animation: none !important;
-	visibility: hidden !important;
+	animation: fade-out 2s !important;
 	display: none !important;
 }
 @keyframes fade-out {
@@ -236,6 +253,10 @@ input[type=radio] {
 @keyframes fall-in {
     from {top: -200vh; opacity: 0; }
     to {top: 0px; opacity: 1; }
+}
+@keyframes fall-in-5vh-offset {
+    from {top: -200vh; opacity: 0; }
+    to {top: 5vh; opacity: 1; }
 }
 
 }
@@ -270,6 +291,9 @@ req.onreadystatechange = function() {
  }
 }
 
+req.onerror = function() {
+    snackbar('There was an error. Try again later');
+}
 
 req.open("GET", "/token?name=" + encodeURIComponent(y));
 
@@ -285,6 +309,11 @@ req.onload = function() {
      reload(currentIndex);
  }
 }
+
+req.onerror = function() {
+    snackbar('There was an error. Try again later');
+}
+
 req.open("POST", "/submit");
 
 req.setRequestHeader("Authorization", localStorage.getItem('auth'));
@@ -323,7 +352,7 @@ if(req.readyState == 4) {
 }
 
 req.onerror = function() {
-    
+    snackbar('There was an error. Try again later');
 }
 
 req.open("GET", "/docs?t=time&n=50&d=" + (function(d) { return timeAt || ( ( new Date ( Date.now() ) ).setHours(0,0,0,0) ) })() + "&a=" + currentIndex );
@@ -378,7 +407,15 @@ function hideModal () {
 
 function snackbar(text) {
     //i guess, for now, just
-	alert(text);
+	//alert(text);
+    var elem = document.querySelector('.snackbar');
+    
+    elem.innerHTML = (text || 'There was an error. Please try again.').HTML()
+    elem.classList.remove('out');
+    
+    setTimeout(function () {
+        elem.classList.add('out');
+    }, 5000);
 }
 
 //from http://jsfiddle.net/jdhenckel/km7prgv4/3
@@ -455,6 +492,9 @@ Send
 <div id="output-preview"></div>
 </div>
 </div>
+</div>
+<div class="snackbar out">
+
 </div>
 <script>
 
