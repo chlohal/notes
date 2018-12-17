@@ -420,8 +420,11 @@ function snackbar(text,dur,type) {
     elem.style.borderColor = colors[type] || colors.suc
     elem.innerHTML = (text || 'There was an error. Please try again.').HTML();
     
+    document.body.appendChild(elem);
+    
+    
     setTimeout(function () {
-        document.body.appendChild(elem);
+        document.body.removeChild(elem);
     }, 5000 || dur);
 }
 
