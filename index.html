@@ -412,7 +412,7 @@ function snackbar(text,dur,type) {
     }
     var elem = document.createElement('div');
     
-    elem.classlist.add('snackbar');
+    elem.classList.add('snackbar');
     elem.style.borderColor = colors[type] || colors.suc
     elem.innerHTML = (text || 'There was an error. Please try again.').HTML()
     //elem.classList.remove('out');
