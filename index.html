@@ -251,13 +251,13 @@ input[type=radio] {
 	width: auto;
 	padding: 0.125em;
 	overflow: hidden;
-	display: flex; 
+	display: none; 
 	align-items: center;
 	justify-content: space-around;
 }
 
-div:not(.my-doc) > .editmenu {
-    display: none; 
+div.my-doc > .editmenu {
+    display: flex; 
 }
 .editmenu > a > svg {
     width: 1.75em;
