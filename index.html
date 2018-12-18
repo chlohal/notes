@@ -366,7 +366,7 @@ if(req.readyState == 4) {
 	 });
 	 
 	 Object.values(totalDocs).sort(function(a,b) {return b.date - a.date}).forEach(x => {
-	     eventualHtml = eventualHtml + "<div" + ((x.author == localStorage.getItem('name'))?(' class="my-doc" data-docid="'+x.id+'"'):'') + "><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.HTML() + "</div><div> Summary: " + x.d.content.HTML() + '</div></div>'
+	     eventualHtml = eventualHtml + "<div" + ((x.author == localStorage.getItem('name'))?(' class="my-doc" data-docid="'+x.id+'"'):'') + "><div>Team: <span class=\"editable-in-edit-mode edit-dropdown\">" + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</span></div><div>People Responsible: <span class=\"editable-in-edit-mode\">" + x.d.names.HTML() + '</span></div><div> Summary: <span class=\"editable-in-edit-mode\">' + x.d.content.HTML() + '</span></div></div>'
 	 });
 	 
 	 //currentIndex = parsedResp.length
@@ -475,6 +475,16 @@ function copyToClip(str,notify) {
   document.removeEventListener("copy", listener);
 };
 
+function editMode() {
+    document.querySelectorAll('.my-doc > .editable-in-edit-mode').forEach(x => {
+	    x.contenteditable = true;
+		x.style.border = '1px solid black'
+	});
+    document.querySelectorAll('.my-doc > .editable-in-edit-mode.edit-dropdown').forEach(x => {
+	    x.innerHTML = '<select><option>Software</option><option>Hardware</option><option>Other</option>'
+	});
+    
+}
 </script>
 </head>
 <body>
