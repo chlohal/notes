@@ -476,11 +476,11 @@ function copyToClip(str,notify) {
 };
 
 function editMode() {
-    document.querySelectorAll('.my-doc > .editable-in-edit-mode').forEach(x => {
+    document.querySelectorAll('.my-doc > div > .editable-in-edit-mode').forEach(x => {
 	    x.contenteditable = true;
 		x.style.border = '1px solid black'
 	});
-    document.querySelectorAll('.my-doc > .editable-in-edit-mode.edit-dropdown').forEach(x => {
+    document.querySelectorAll('.my-doc > div > .editable-in-edit-mode.edit-dropdown').forEach(x => {
 	    x.innerHTML = '<select><option>Software</option><option>Hardware</option><option>Other</option>'
 	});
     
