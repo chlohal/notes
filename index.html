@@ -243,6 +243,33 @@ input[type=radio] {
     left: 50%;
     transform: translate(-50%, 0);
 }
+.editmenu {
+    position: absolute;
+	top: 0px;
+	right: 0px;
+	height: 2em;
+	width: auto;
+	border: 1px solid #92D190;
+	background: #ffffff;
+	padding: 0.325em;
+	min-width: 2em;
+	border-radius: 10px;
+	display: flex; 
+	align-items: center;
+	justify-content: space-around;
+}
+
+div:not(.my-doc) > .editmenu {
+    display: none; 
+}
+.editmenu > a > svg {
+    width: 1.25em;
+	height: 1.25em;
+	border: 1px solid black;
+	border-radius: 0.2em;
+	padding: 0.1em;
+	margin: 0.1625em;
+}
 #output-preview {
     max-width: 90vw;
 	max-height: 90vh;
@@ -346,7 +373,7 @@ if(req.readyState == 4) {
 	 });
 	 
 	 Object.values(totalDocs).sort(function(a,b) {return b.date - a.date}).forEach(x => {
-	     eventualHtml = eventualHtml + "<div" + ((x.author == localStorage.getItem('name'))?(' class="my-doc" data-docid="'+x.id+'"'):'') + "><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.HTML() + "</div><div> Summary: " + x.d.content.HTML() + "</div></div>"
+	     eventualHtml = eventualHtml + "<div" + ((x.author == localStorage.getItem('name'))?(' class="my-doc" data-docid="'+x.id+'"'):'') + "><div>Team: " + (((["Software","Hardware","Other"])[x.d.team]) || 'Error') + "</div><div>People Responsible: " + x.d.names.HTML() + "</div><div> Summary: " + x.d.content.HTML() + '</div><div class="editmenu"><a href="javascript:void(0);"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M12 16c1.656 0 3 1.344 3 3s-1.344 3-3 3-3-1.344-3-3 1.344-3 3-3zm0 1c1.104 0 2 .896 2 2s-.896 2-2 2-2-.896-2-2 .896-2 2-2zm0-8c1.656 0 3 1.344 3 3s-1.344 3-3 3-3-1.344-3-3 1.344-3 3-3zm0 1c1.104 0 2 .896 2 2s-.896 2-2 2-2-.896-2-2 .896-2 2-2zm0-8c1.656 0 3 1.344 3 3s-1.344 3-3 3-3-1.344-3-3 1.344-3 3-3zm0 1c1.104 0 2 .896 2 2s-.896 2-2 2-2-.896-2-2 .896-2 2-2z"/></svg></a></div></div>'
 	 });
 	 
 	 //currentIndex = parsedResp.length
