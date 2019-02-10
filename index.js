@@ -58,6 +58,16 @@ app.get('/', function(req,res) {
 });
 app.use(express.static('public'));
 
+app.get('/image/:commit_id/:image_index', function (req, resp) {
+	db.get('SELECT id, picture1, picture2, picture3, picture4, mimetypes FROM Commits WHERE id = ? AND ? IS NOT NULL', [req.params.commit_id,'picture' + req.params.image_index], function(err, data) {
+		var buffer = data['picture' + req.params.image_index];
+		var mime = JSON.parse(data.mimetypes)['b' + req.params.image_index].split(/:|;/)[1]
+		
+		resp.type(mime);
+		return resp.end(buffer);
+	})
+});
+
 app.post('/api/createUser', function (req, resp) {
     if(!req.body) { return resp.sendStatus(500) }
     if(typeof req.body.type !== 'number') { return resp.status(400).send('Invalid account type') }
@@ -227,7 +237,7 @@ app.post('/api/submit', function(req,resp) {
 	});
 });
 
-app.get('/api/docs/bytime', function(req, res) {
+app.get('/api/docs/bytime', function(req, resp) {
     //make sure the before and after query strings are defined-- `is` overrides both if it's there
     req.query.b = req.query.i || req.query.b || 0
     req.query.a = req.query.i || req.query.a || 0
@@ -243,17 +253,16 @@ app.get('/api/docs/bytime', function(req, res) {
 	  db.all('SELECT id, creator, type, isonteam, humannames, creationDate, problem, challenges, didsolve, solution, picture1, picture2, picture3, picture4, mimetypes FROM Commits WHERE creationDate BETWEEN ? AND ?', [req.query.b,req.query.a], function(err, commitData) {
 		  if(err) return resp.sendStatus(500);
 		  
-		  //restore pictures to base64 for transfer
+		  //change pictures to urls that'll go to /image
 		  for(var i = 0; i < commitData.length; i++) {
-			  var mimeTypesOfPictures = JSON.parse(commitData[i].mimetypes);
 			  for(var i_ = 1; i_ <= 4; i_++) {
 				if(commitData[i]['picture' + i_]) {
-					commitData[i]['picture' + i_] = mimeTypesOfPictures['b'+i_] + ',' + commitData[i]['picture' + i_].toString('base64');
+					commitData[i]['picture' + i_] = '/image/' + commitData[i].id + '/' + i_
 				}
 			  }
 			  delete commitData[i].mimetypes;
 		  }
-		  res.send(commitData.slice(0,(req.query.n || 50)));
+		  resp.send(commitData.slice(0,(req.query.n || 50)));
 	  });
   });
 });

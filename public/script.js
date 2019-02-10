@@ -151,8 +151,7 @@ if(req.readyState == 4) {
 	 
 	 uploadList.innerHTML = eventualHtml;
  } else if (req.status == 403) {
-     localStorage.removeItem('token');
-	 location.reload();
+     signOut();
  }
  }
 }
