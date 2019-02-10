@@ -1,116 +1,261 @@
 var JSONDB = require ('simple-json-db');
-var db = new JSONDB('db.json');
+var jdb = new JSONDB('db.json');
 
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var https = require('https');
 var http = require('http');
+var request = require('request');
 
-var tokens = db.JSON().tokens || {};
-var doc = db.JSON().doc || {};
+var randtoken = require('rand-token');
+
+var fs = require('fs');
+var dbFile = __dirname + '/.data/sqlite.db';
+var exists = fs.existsSync(dbFile);
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database(dbFile);
+
+var tokens = jdb.JSON().tokens || {};
+var doc = jdb.JSON().doc || {};
 
 var passstring = require('./password.json');
 
 function updateDb() {
-   var d = db.JSON();
+   var d = jdb.JSON();
    d.doc = doc
    d.tokens = tokens
-   db.JSON(d);
-   db.sync()
+   jdb.JSON(d);
+   jdb.sync()
 }
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '22mb'}));
 
-app.get('/token', function (req,res) {
-    if(req.headers.authorization == passstring) {
-		var ifIndex = Object.values(tokens).indexOf(req.query.name);
-		var tkn;
-		if(ifIndex == -1) {
-			tkn = (function(i,p,r,l) {
-				p = '1234567890ABCDEFGHIJKLMNOPabcdefghijklmnopqrstuvwxyz._-'
-				r = ""
-				for( i = 0; i < 20; i++) {
-					r = r + p[Math.floor( p.length * Math.random())]
-				}
-				
-				while(tokens[r]) {
-				  r = ''
-				  for( i = 0; i < 20; i++) {
-					  r = r + p[Math.floor( p.length * Math.random())]
-				  }
-				}
-				return r
-				
-			})(); 
-        } else {
-		    tkn = Object.keys(tokens)[ifIndex]
-		}
-        tokens[tkn] = req.query.name
-        res.send(tkn);
-        updateDb();
-    } else {
-       res.sendStatus(403);
-    }
-
+//a little helper function to create IDs 
+function makeId(tableName) {
+  var id = Date.now().toString(36);
+  var discriminatorNumber = 0;
+  db.each('SELECT id FROM '+tableName+' WHERE id = ?', [id], function(err) {
+    discriminatorNumber++ 
+  });
+  id = id + '-' + discriminatorNumber.toString(36);
+  return id;
+}
+db.serialize(function(){
+  if (!exists) {
+    db.run('CREATE TABLE Users (id VARCHAR(20), token VARCHAR(40), type TINYINT, googleid TEXT, googletoken TEXT, emailid CHAR(6), candycredit INT, role TINYINT, miscdata TEXT)');
+    db.run('CREATE TABLE Commits (id VARCHAR(20), creator VARCHAR(20), type TINYINT, isonteam TINYINT(2), humannames TEXT, creationDate INT, problem TEXT, challenges TEXT, didsolve TINYINT(1), solution TEXT, picture1 BLOB, picture2 BLOB, picture3 BLOB, picture4 BLOB, mimetypes TEXT, miscdata TEXT)');
+    console.log('Database created, loaded!');
+  }
+  else {
+    console.log('Database loaded!');
+  }
+  //console.log('database serialization completed');
 });
-
-app.get('/docs', function(req,res) {
-    if(tokens[req.headers.authorization]) {
-      var docArr = Object.values(doc);
-      if(req.query.t == 'time') {
-          res.send(docArr.sort(function(a,b) {return b.date - a.date}).filter(x => { return x.date >= ( req.query.d || 0 ) && x.date <= (req.query.b || Infinity) }).slice((req.query.a || 0),((req.query.a || 0) + (req.query.n || 100))));
-      } else {
-		  res.sendStatus(400);
-	  }
-    } else {
-       res.sendStatus(403);
-    }
-});
-
-app.post('/submit', function (req,res) {
-    if(tokens[req.headers.authorization]) {
-        if(!req.body) { return } 
-		
-		console.log(req.body);
-		
-        req.body.author = tokens[req.headers.authorization]
-        req.body.date = Date.now();
-        
-        var docid = (function(d,t) {
-            d = Date.now();
-            t = Math.floor(Math.random() * 10000)
-            
-            while(doc[d + "" + t]) {
-                t = Math.floor(Math.random() * 10000)
-            }
-            
-            return d + "" + t
-        
-        })();
-		
-        req.body.id = docid
-		
-        doc[docid] = req.body
-        res.sendStatus(201);
-        updateDb();
-    } else {
-       res.sendStatus(403);
-    }
-    
-});
-
-app.get('/verifyToken', function(req,res) {
-    if(tokens[req.headers.authorization]) {
-        res.sendStatus(200);
-    } else {
-       res.sendStatus(403);
-    }
-
-})
 
 app.get('/', function(req,res) {
     res.sendFile(__dirname + '/index.html');
+});
+app.use(express.static('public'));
+
+app.post('/api/createUser', function (req, resp) {
+    if(!req.body) { return resp.sendStatus(500) }
+    if(typeof req.body.type !== 'number') { return resp.status(400).send('Invalid account type') }
+    request('https://www.googleapis.com/oauth2/v3/tokeninfo?id_token='+encodeURIComponent(req.body.token), function(err, res, body) {
+      
+      //if there was an error in requesting, tell the user
+      if(err) { return resp.sendStatus(500) }
+      
+      //parse the body
+      if(typeof body == 'string') body = JSON.parse(body);
+      //then make the record
+ 
+      //if the id of the token doesn't match up with the data they gave us, something's gone wrong
+      if(body.sub !== req.body.googleid) { return resp.sendStatus(500) }
+      //if the token-issuer isn't us, that's bad too
+      if(body.aud !== '1028334096653-kiordr8judlc4fiia5ojal754edkg911.apps.googleusercontent.com') { return resp.sendStatus(500) }
+      //if we don't have access to their email, that's a very bad.
+	  if(!body.email) { return resp.sendStatus(500) }
+	  //if they aren't a part of NHS (as shown by their email domain), kick 'em
+	  if(body.email.split('@')[1] !== 'students.needham.k12.ma.us') { return resp.sendStatus(500) }
+	  
+      //look for a user with the applicable Google ID
+      //to see if we need to create a new user, or just give back the user credentials
+      db.get('SELECT googleid, id, token FROM Users WHERE googleid = ?', [req.body.googleid], function(er, da) {
+        //if there's already a user, just send the credentials.
+        if(da) { return resp.send('{"res": "200 OK","token":"'+da.token+'","id":"'+da.id+'"}'); }
+        //generate token & id
+        var thistkn = randtoken.generate(40);
+        var thisid = makeId('Users');
+		var userEmailID = body.email.split('@')[0];
+		var userRole = 0;
+		
+		if(userEmailID == 'cbh221' || userEmailID == 'mbm221') { userRole = 8 }
+		
+        //make the record, then tell the user about it
+        db.run('INSERT INTO Users (id, token, type, googleid, googletoken, candycredit, emailid, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[thisid, thistkn, req.body.type, body.sub, req.body.token, 0, userEmailID, userRole],function(err) {
+          if(err) { console.log(err); return resp.sendStatus(500) }
+          resp.status(201).send('{"res": "201 Created","token":"'+thistkn+'","id":"'+thisid+'"}');
+        });
+      });//wow, look at all those callbacks
+    });
+});
+app.get('/api/candybank/overview', function(req, resp) {
+	if(!req.headers.authorization) { return resp.sendStatus(401) }
+	
+	var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
+	
+	db.get('SELECT id, token FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
+		if(err) { return resp.sendStatus(500); }
+		if(!userData) { return resp.sendStatus(403); }
+		if(userData.token !== userToken) { return resp.sendStatus(403); }
+		
+		db.all('SELECT id, emailid, candycredit FROM Users ORDER BY candycredit DESC', function(err, credits) {
+			resp.send(credits);
+		});
+		
+	});
+});
+app.put('/api/candybank/setCredit', function(req, resp) {
+	if(!req.headers.authorization) { return resp.sendStatus(401) }
+	
+	if(!req.body) return resp.sendStatus(400);
+	if(!req.body.id || req.body.credit === undefined) return resp.sendStatus(400);
+	
+	if(parseInt(req.body.credit) == NaN) return resp.sendStatus(400);
+	
+	var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
+	
+	db.get('SELECT id, token, role FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
+		if(err) { return resp.sendStatus(500); }
+		if(!userData) { return resp.sendStatus(403); }
+		if(userData.token !== userToken) { return resp.sendStatus(403); }
+		if(userData.role < 7) { return resp.sendStatus(403); }
+		
+		db.run('UPDATE Users SET candycredit = ? WHERE id = ?',[req.body.credit, req.body.id], function(err) {
+			if(err) { return resp.sendStatus(500) }
+			resp.sendStatus(200);
+		});
+	});
+});
+app.get('/api/user/self', function(req,resp) {
+	if(!req.headers.authorization) { return resp.sendStatus(401) }
+	
+	var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
+	
+	db.get('SELECT * FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
+		if(err) { return resp.sendStatus(500); }
+		if(!userData) { return resp.sendStatus(403); }
+		if(userData.token !== userToken) { return resp.sendStatus(403); }
+		
+		delete userData.token;
+		
+		resp.send(userData);
+	});
+});
+app.post('/api/submit', function(req,resp) {
+	if(!req.headers.authorization) { return resp.sendStatus(401) }
+	
+	var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
+	
+	db.get('SELECT id, token FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
+		if(err) { return resp.sendStatus(500); }
+		if(!userData) { return resp.sendStatus(403); }
+		if(userData.token !== userToken) { return resp.sendStatus(403); }
+		
+		//thus, we have verified that the user is who they say they are. Great!
+		
+		if(!req.body.d) { return resp.sendStatus(400); }
+		var submission = req.body.d;
+		//wait, hold on: did they give us all the mandatory fields?
+		if(!submission.humannames || !submission.problem || submission.type === undefined || !submission.challenges || submission.isonteam === undefined || submission.didsolve === undefined || (submission.didsolve && !submission.solution)) {
+			console.log(submission);
+			return resp.status(400).send('Mandatory fields not included');
+		}
+		//... in the right order? (i.e. is there a picture1 but no picture2?)
+		if((submission.picture2 && !submission.picture1) || (submission.picture3 && !submission.picture2) || (submission.picture4 && !submission.picture3)) {
+			return resp.status(400).send('Pictures in incorrect order');
+		}
+		//okay!
+		//make picture variables
+		var pictureBuffers = {
+			b1: null, 
+			b2: null, 
+			b3: null, 
+			b4: null
+		}
+		var mimeTypesOfPictures = {
+			b1: null, 
+			b2: null, 
+			b3: null, 
+			b4: null
+		}
+		for(var i = 1; i <= 5; i++) {
+			if(submission['picture' + i]) {
+				var b64Split = submission['picture' + i].split(',');
+				pictureBuffers['b' + i] = Buffer.from(b64Split[1],'base64');
+				mimeTypesOfPictures['b' + i] = b64Split[0];
+			}
+		}
+		//make an id-- save it to a variable so we can access the same id later
+		var thisid = makeId('Commits');
+		
+		db.run('INSERT INTO Commits (id, creator, type, isonteam, humannames, creationDate, problem, challenges, didsolve, solution, picture1, picture2, picture3, picture4, mimetypes) VALUES ($id, $creator, $type, $isonteam, $humannames, $creationDate, $problem, $challenges, $didsolve, $solution, $picture1, $picture2, $picture3, $picture4, $mimetypes)',{
+				$id: thisid,
+				$creator: userId, 
+				$type: submission.type,
+				$isonteam: submission.isonteam,
+				$humannames: submission.humannames,
+				$creationDate: Date.now(), 
+				$problem: submission.problem,
+				$challenges: submission.challenges,
+				$didsolve: submission.didsolve,
+				$solution: submission.solution,
+				$picture1: pictureBuffers.b1, 
+				$picture2: pictureBuffers.b2,
+				$picture3: pictureBuffers.b3,
+				$picture4: pictureBuffers.b4,
+				$mimetypes: JSON.stringify(mimeTypesOfPictures)
+			},function(err) {
+            if(err) { return resp.sendStatus(500) }
+            resp.status(201).send('{"res": "201 Created","id":"'+thisid+'"}');
+        });
+		//give the user a Candy Credit(tm)
+		db.run('UPDATE Users SET candycredit = candycredit + 1 WHERE id = ?', [userId], function(err) {
+			if(err) { console.log(err) }
+		});
+	});
+});
+
+app.get('/api/docs/bytime', function(req, res) {
+    //make sure the before and after query strings are defined-- `is` overrides both if it's there
+    req.query.b = req.query.i || req.query.b || 0
+    req.query.a = req.query.i || req.query.a || 0
+	
+	
+	if(!req.headers.authorization) { return resp.sendStatus(401) }
+	var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
+	
+	//verify that they are who they say they are
+  db.get('SELECT id, token FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
+	  if(err) return resp.sendStatus(500);
+	  if(!userData) return resp.sendStatus(403);
+	  db.all('SELECT id, creator, type, isonteam, humannames, creationDate, problem, challenges, didsolve, solution, picture1, picture2, picture3, picture4, mimetypes FROM Commits WHERE creationDate BETWEEN ? AND ?', [req.query.b,req.query.a], function(err, commitData) {
+		  if(err) return resp.sendStatus(500);
+		  
+		  //restore pictures to base64 for transfer
+		  for(var i = 0; i < commitData.length; i++) {
+			  var mimeTypesOfPictures = JSON.parse(commitData[i].mimetypes);
+			  for(var i_ = 1; i_ <= 4; i_++) {
+				if(commitData[i]['picture' + i_]) {
+					commitData[i]['picture' + i_] = mimeTypesOfPictures['b'+i_] + ',' + commitData[i]['picture' + i_].toString('base64');
+				}
+			  }
+			  delete commitData[i].mimetypes;
+		  }
+		  res.send(commitData.slice(0,(req.query.n || 50)));
+	  });
+  });
 });
 
 var server = app.listen(5557, function() {
