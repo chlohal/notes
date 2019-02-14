@@ -57,6 +57,7 @@ border-radius: 5px;
 	margin: 0px;
 	margin-bottom: 5px;
 	color: black;
+	cursor: default;
 }
 .top-spacer {
 width: 3vh;

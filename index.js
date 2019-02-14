@@ -21,6 +21,8 @@ var doc = jdb.JSON().doc || {};
 
 var passstring = require('./password.json');
 
+var exportCommits = require('./export.js');
+
 function updateDb() {
    var d = jdb.JSON();
    d.doc = doc
@@ -91,26 +93,40 @@ app.post('/api/createUser', function (req, resp) {
 	  
       //look for a user with the applicable Google ID
       //to see if we need to create a new user, or just give back the user credentials
-      db.get('SELECT googleid, id, token FROM Users WHERE googleid = ?', [req.body.googleid], function(er, da) {
+      db.get('SELECT * FROM Users WHERE googleid = ?', [req.body.googleid], function(er, da) {
         //if there's already a user, just send the credentials.
-        if(da) { return resp.send('{"res": "200 OK","token":"'+da.token+'","id":"'+da.id+'"}'); }
+        if(da) { 
+			da.res = "200 OK";
+			return resp.send(da); 
+		}
         //generate token & id
         var thistkn = randtoken.generate(40);
         var thisid = makeId('Users');
 		var userEmailID = body.email.split('@')[0];
 		var userRole = 0;
 		
-		if(userEmailID == 'cbh221' || userEmailID == 'mbm221') { userRole = 8 }
+		if(userEmailID == 'cbh221') { userRole = 8 }
 		
         //make the record, then tell the user about it
         db.run('INSERT INTO Users (id, token, type, googleid, googletoken, candycredit, emailid, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[thisid, thistkn, req.body.type, body.sub, req.body.token, 0, userEmailID, userRole],function(err) {
           if(err) { console.log(err); return resp.sendStatus(500) }
+		  var responseprep = {
+			  id: thisid,
+			  token: thistkn,
+			  type: req.body.type,
+			  googleid: body.sub,
+			  googletoken: req.body.token,
+			  candycredit: 0,
+			  emailid: userEmailID,
+			  role: userRole,
+			  res: "201 Created"
+		  }
           resp.status(201).send('{"res": "201 Created","token":"'+thistkn+'","id":"'+thisid+'"}');
         });
       });//wow, look at all those callbacks
     });
 });
-app.get('/api/candybank/overview', function(req, resp) {
+app.get('/api/candybank/list', function(req, resp) {
 	if(!req.headers.authorization) { return resp.sendStatus(401) }
 	
 	var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
@@ -121,9 +137,27 @@ app.get('/api/candybank/overview', function(req, resp) {
 		if(userData.token !== userToken) { return resp.sendStatus(403); }
 		
 		db.all('SELECT id, emailid, candycredit FROM Users ORDER BY candycredit DESC', function(err, credits) {
+			if(err) { resp.sendStatus(500); }
 			resp.send(credits);
 		});
 		
+	});
+});
+app.get('/api/permissions/list', function(req, resp) {
+	if(!req.headers.authorization) { return resp.sendStatus(401) }
+	
+	var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
+	
+	db.get('SELECT id, token, role FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
+		//... do you even have a reason to be accessing this?
+		if(userData.role < 7) {
+			return resp.sendStatus(403);
+		}
+		//alright, great.
+		db.all('SELECT id, emailid, role FROM Users ORDER BY role DESC', function(err, roles) {
+			if(err) { resp.sendStatus(500); }
+			resp.send(roles);
+		});
 	});
 });
 app.put('/api/candybank/setCredit', function(req, resp) {
@@ -148,6 +182,34 @@ app.put('/api/candybank/setCredit', function(req, resp) {
 		});
 	});
 });
+app.put('/api/permissions/setRole', function(req, resp) {
+	if(!req.headers.authorization) { return resp.sendStatus(401) }
+	
+	if(!req.body) return resp.sendStatus(400);
+	if(!req.body.id || req.body.role === undefined) return resp.sendStatus(400);
+	
+	var newRole = parseInt(req.body.role);
+	if(newRole == NaN) return resp.sendStatus(400);
+	
+	var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
+	
+	db.get('SELECT id, token, role FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
+		if(err) { return resp.sendStatus(500); }
+		if(!userData) { return resp.sendStatus(403); }
+		if(userData.token !== userToken) { return resp.sendStatus(403); }
+		if(userData.role < 7) { return resp.sendStatus(403); }
+		
+		if(newRole == 8) { return resp.status(400).send("ERRMSG:You are not allowed to set to that role!"); }
+		if(newRole > 8) { return resp.status(400).send("ERRMSG:That is not a valid role number!"); }
+		db.get('SELECT id, role FROM Users WHERE id = ?', [req.body.id], function(err, thatUser) {
+			if(thatUser.role == 8) { return resp.status(400).send("ERRMSG:You are not allowed to change users with that role!"); }
+			db.run('UPDATE Users SET candycredit = ? WHERE id = ?',[newRole, req.body.id], function(err) {
+				if(err) { return resp.sendStatus(500) }
+				resp.sendStatus(200);
+			});
+		});
+	});
+});
 app.get('/api/user/self', function(req,resp) {
 	if(!req.headers.authorization) { return resp.sendStatus(401) }
 	
@@ -168,10 +230,12 @@ app.post('/api/submit', function(req,resp) {
 	
 	var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
 	
-	db.get('SELECT id, token FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
+	db.get('SELECT id, token, role FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
 		if(err) { return resp.sendStatus(500); }
 		if(!userData) { return resp.sendStatus(403); }
 		if(userData.token !== userToken) { return resp.sendStatus(403); }
+		
+		if(!userdata.role) { return resp.sendStatus(401); }
 		
 		//thus, we have verified that the user is who they say they are. Great!
 		
@@ -266,6 +330,21 @@ app.get('/api/docs/bytime', function(req, resp) {
 	  });
   });
 });
+
+//make The Hecking Doc
+//mapped to an api route for now; can be changed later
+app.get('/api/notebook/todocs', function(req, res) {
+	makeTheHeckingDoc('','',function() {
+		res.send();
+	});
+})
+function makeTheHeckingDoc(docId, googleToken, callback) {
+	db.all('SELECT * FROM Commits', function(err, commits) {
+		exportCommits(commits, callback);
+	});
+	
+}
+
 
 var server = app.listen(5557, function() {
   console.log('Your app is listening on port ' + server.address().port);

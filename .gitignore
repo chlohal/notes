@@ -1,3 +1,4 @@
-/db.json
+db.json
 password.json
 .data/sqlite.db
+.data/

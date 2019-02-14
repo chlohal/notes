@@ -1,0 +1,17 @@
+0: not in robotics-- cannot submit documentation (default role)
+
+1: not on software nor hardware
+
+2: hardware
+
+3: software
+
+4: hardware manager
+
+5: software manager
+
+6: team manager
+
+7: documentation manager (can delete documentation, appoint people (including self) to lower roles, and alter candy balance)
+
+8: administrator (everything-- cannot be appointed manually)

@@ -20,9 +20,15 @@ var prof = usr.getBasicProfile();
       var rJSON = JSON.parse(xhr.responseText);
       localStorage.setItem('token',rJSON.token);
       localStorage.setItem('id',rJSON.id);
+	  localStorage.setItem('self',xhr.responseText);
 	  document.getElementById("login").classList.add("login-hidden");
 	  document.querySelector('.content-logged-in').classList.remove("out");
 	  document.querySelector('#top-in').classList.remove("out");
+	  
+	  //hide all o' dem thingies that we don't want the normal peeps to see
+	  try {
+		if(JSON.parse(localStorage.getItem('self')).role >= 4) { document.querySelector('.permedit-button').hidden = false; }
+	  } catch(e) {}
 	  reload(0);
     }
   };
@@ -93,8 +99,11 @@ function formatAndSubmit() {
 function sendSubmission(x) {
 var req = new XMLHttpRequest();
 
+snackbar('Sending documentation...');
+
 req.onload = function() {
  if(req.status == 201) {
+	 snackbar(' ',1);
      reload(currentIndex);
  }
 }
@@ -190,7 +199,7 @@ function openCandyBank() {
 	
 	req.onload = function() {
 		if(req.status == 200) {
-			snackbar('Candy credit data reloaded!');
+			snackbar('Candy credit data reloaded!',1000);
 			candyBankData = JSON.parse(req.responseText);
 			
 			var table = document.getElementById('candy-credit-table');
@@ -198,11 +207,33 @@ function openCandyBank() {
 			candyBankData.forEach(dataEntry => {
 				var tr = document.createElement('tr');
 				tr.setAttribute('data-acctid',dataEntry.id);
-				tr.innerHTML = '<td>'+dataEntry.emailid.HTML() + '</td><td class="editable-by-admins">' + dataEntry.candycredit.toString().HTML() + '</td>';
+				tr.innerHTML = '<td>'+dataEntry.emailid.HTML() + '</td><td class="editable-by-admins">' + (dataEntry.candycredit||0).toString().HTML() + '</td>';
 				table.appendChild(tr);
 			});
-			if(JSON.parse(localStorage.getItem('self')).role == 8) {
-				loadEditingAndSuch();
+			if(JSON.parse(localStorage.getItem('self')).role >= 7) {
+				loadEditingAndSuch(function(elem) {
+					var newVal = parseInt(elem.innerText);
+					if(newVal == NaN) { return snackbar('Candy credit values must be an integer!',3000,'war') }
+					
+					var req = new XMLHttpRequest();
+					
+					req.onload = function() {
+						if(req.status == 200) {
+							snackbar('Saved changes!',3000,'suc');
+						} else snackbar('Error in saving',3000,'err');
+					}
+					
+					req.onerror = function() {
+						snackbar('Error in saving',3000,'err');
+					}
+					
+					req.open("PUT", "/api/candybank/setCredit");
+
+					req.setRequestHeader("Authorization", localStorage.getItem('id') + ':' + localStorage.getItem('token'));
+					req.setRequestHeader('Content-Type', 'application/json');
+					
+					req.send(JSON.stringify({id: elem.parentElement.getAttribute('data-acctid'), credit: newVal}));
+				});
 			}
 		} else req.onerror()
 	}
@@ -211,46 +242,98 @@ function openCandyBank() {
 		snackbar('Error in loading data',3000,'err');
 	}
 	
-	req.open("GET", "/api/candybank/overview");
+	req.open("GET", "/api/candybank/list");
 
 	req.setRequestHeader("Authorization", localStorage.getItem('id') + ':' + localStorage.getItem('token'));
 	
 	req.send();
-	
-	
-	function loadEditingAndSuch() {
-		console.log('loadEditingAndSuch');
-		document.querySelectorAll('.editable-by-admins').forEach(elem => {
-			console.log(elem);
-			elem.setAttribute('contenteditable', true);
-			elem.addEventListener('focusout', function() {
-				console.log('focs');
-				var newVal = parseInt(elem.innerText);
-				if(newVal == NaN) { return snackbar('Candy credit values must be an integer!',3000,'war') }
-				
-				var req = new XMLHttpRequest();
-				
-				req.onload = function() {
-					if(req.status == 200) {
-						snackbar('Saved changes to candy data',3000,'suc');
-					} else snackbar('Error in saving',3000,'err');
-				}
-				
-				req.onerror = function() {
-					snackbar('Error in saving',3000,'err');
-				}
-				
-				req.open("PUT", "/api/candybank/setCredit");
 
-				req.setRequestHeader("Authorization", localStorage.getItem('id') + ':' + localStorage.getItem('token'));
-				req.setRequestHeader('Content-Type', 'application/json');
-				
-				req.send(JSON.stringify({id: elem.parentElement.getAttribute('data-acctid'), credit: newVal}));
-			});
-		});
-	}
 }
+var permissionData = [];
+function openPermedit() {
+	document.querySelector('.permedit-button > svg').style.background = '#000000'
+	document.querySelector('.permedit-button > svg').style.fill = '#ffffff'
+	document.querySelector('.content-logged-in').style.overflowY = 'hidden'
+	document.querySelector('.content-logged-in').scrollTop = 0
+	var container = document.querySelector('.modal-permedit');
+	container.classList.remove('out');
+	container.scrollTop = 0;
+	modalOpen = true;
+	var search = new URLSearchParams(location.search);
+	search.set('open','permedit');
+	history.replaceState(null, '', "?" + search.toString());
+	
+	//load data
+	snackbar('Loading data from server...');
+	var req = new XMLHttpRequest();
+	
+	req.onload = function() {
+		if(req.status == 200) {
+			snackbar('Permission data reloaded!',1000);
+			permissionData = JSON.parse(req.responseText);
+			
+			var table = document.getElementById('permedit-table');
+			table.innerHTML = '<tr><th>Email ID</th><th>Role Number(<a href="/abt_roles.txt" target="_blank">?</a>)</th></tr>';
+			permissionData.forEach(dataEntry => {
+				var tr = document.createElement('tr');
+				tr.setAttribute('data-acctid',dataEntry.id);
+				tr.setAttribute('data-rolestatic',dataEntry.role);
+				tr.innerHTML = '<td>'+dataEntry.emailid.HTML() + '</td><td class="editable-by-admins">' + (dataEntry.role||0).toString().HTML() + '</td>';
+				table.appendChild(tr);
+			});
+			if(JSON.parse(localStorage.getItem('self')).role >= 7) {
+				loadEditingAndSuch(function(elem) {
+					var newVal = parseInt(elem.innerText);
+					if(newVal == NaN) { return snackbar('Roles must be an integer!',3000,'war') }
+					
+					var req = new XMLHttpRequest();
+					
+					req.onload = function() {
+						if(req.status == 200) {
+							snackbar('Saved changes!',3000,'suc');
+							elem.parentElement.setAttribute('data-rolestatic', newVal);
+						} else req.onerror()
+					}
+					
+					req.onerror = function() {
+						elem.innerHTML = elem.parentElement.getAttribute('data-rolestatic');
+						if(req.responseText) {
+							if(req.responseText.startsWith('ERRMSG:')) {
+								return snackbar(req.responseText.substring(7),3000,'err');
+							} 
+						}
+						snackbar('Error in saving',3000,'err');
+					}
+					
+					req.open("PUT", "/api/permissions/setRole");
 
+					req.setRequestHeader("Authorization", localStorage.getItem('id') + ':' + localStorage.getItem('token'));
+					req.setRequestHeader('Content-Type', 'application/json');
+					
+					req.send(JSON.stringify({id: elem.parentElement.getAttribute('data-acctid'), role: newVal}));
+				});
+			}
+		} else req.onerror()
+	}
+	
+	req.onerror = function() {
+		snackbar('Error in loading data',3000,'err');
+	}
+	
+	req.open("GET", "/api/permissions/list");
+
+	req.setRequestHeader("Authorization", localStorage.getItem('id') + ':' + localStorage.getItem('token'));
+	
+	req.send();
+}
+function loadEditingAndSuch(cb) {
+	document.querySelectorAll('.editable-by-admins').forEach(elem => {
+		elem.setAttribute('contenteditable', true);
+		elem.addEventListener('focusout', function() {
+			cb(elem);
+		});
+	});
+}
 function downloadParse() {
 
     document.querySelector('.output-button > svg').style.background = '#000000'
@@ -319,14 +402,14 @@ function snackbar(t,d,y) {
     elem.onclick = function() {
         elem.parentElement.removeChild(elem);
     }
-    elem.innerHTML = (t || 'There was an error. Please try again.').HTML();
+    elem.innerHTML = (t || ' ').HTML();
     
     document.body.appendChild(elem);
     
     
     setTimeout(function () {
         try { document.body.removeChild(elem); } catch (e) {}
-    }, 3000 || d);
+    }, d || 3000 );
 }
 //open modal from query string on load
 window.addEventListener('load', function() {
@@ -335,6 +418,9 @@ window.addEventListener('load', function() {
 	switch(query.get('open')) {
 		case 'candybank':
 		    openCandyBank();
+		break
+		case 'permedit':
+			openPermedit();
 		break
 	}
 });
