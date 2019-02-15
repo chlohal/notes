@@ -333,9 +333,9 @@ app.get('/api/docs/bytime', function(req, resp) {
 
 //make The Hecking Doc
 //mapped to an api route for now; can be changed later
-app.get('/api/notebook/todocs', function(req, res) {
-	makeTheHeckingDoc('','',function() {
-		res.send();
+app.get('/api/notebook/tohtml', function(req, res) {
+	makeTheHeckingDoc('','',function(html) {
+		res.send(html);
 	});
 })
 function makeTheHeckingDoc(docId, googleToken, callback) {
