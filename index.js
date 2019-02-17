@@ -62,6 +62,7 @@ app.use(express.static('public'));
 
 app.get('/image/:commit_id/:image_index', function (req, resp) {
 	db.get('SELECT id, picture1, picture2, picture3, picture4, mimetypes FROM Commits WHERE id = ? AND ? IS NOT NULL', [req.params.commit_id,'picture' + req.params.image_index], function(err, data) {
+		if(!data) return req.sendStatus(404);
 		var buffer = data['picture' + req.params.image_index];
 		var mime = JSON.parse(data.mimetypes)['b' + req.params.image_index].split(/:|;/)[1]
 		
@@ -333,12 +334,21 @@ app.get('/api/docs/bytime', function(req, resp) {
 
 //make The Hecking Doc
 //mapped to an api route for now; can be changed later
-app.get('/api/notebook/tohtml', function(req, res) {
-	makeTheHeckingDoc('','',function(html) {
-		res.send(html);
-	});
+app.get('/api/export/html', function(req, res) {
+	//if(!req.headers.authorization) { return res.sendStatus(401) }
+	//var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
+	
+   // db.get('SELECT id, token, role FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
+	//   if(err) return resp.sendStatus(500);
+	//   if(!userData) return resp.sendStatus(403);
+	//   if(userData.role < 6) return resp.sendStatus(401);
+		makeTheHeckingDoc(function(html) {
+			res.type('txt');
+			res.send(html);
+		});
+	//});
 })
-function makeTheHeckingDoc(docId, googleToken, callback) {
+function makeTheHeckingDoc(callback) {
 	db.all('SELECT * FROM Commits', function(err, commits) {
 		exportCommits(commits, callback);
 	});

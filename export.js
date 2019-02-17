@@ -1,6 +1,6 @@
 module.exports = function(commits, callback) {
 	//var docs = docsClient;
-    var html = `<div style="color:black;background:none;font-family:'Times New Roman', serif;font-size:12pt;"><p style="color:red">This document has been automatically generated.</p><br>`;
+    var html = `<div style="color:black;background:none;font-family:'Times New Roman', serif;font-size:12pt;"><span style="background-color: rgb(255, 0, 000);">This is a custom generated document.</span><br>`;
     // > split the array into days
     var commitDays = [];
     commits.forEach(function(commitObject) {
@@ -26,37 +26,42 @@ module.exports = function(commits, callback) {
         
         if(pushTheWorkingObject) commitDays.push(workingObject);
     });
-    // > make array of Docs changes that we will put into the request
+    // > make html for each day
     for(var i = 0; i < commitDays.length; i++) {
+		console.log('i',commitDays.length, i);
         var thisDay = commitDays[i];
         html = html + `<h2>Documentation for ${thisDay.day}</h2>`
         
-        var t1 = t2 = t3 = `<table style="border-collapse:collapse;border:1px solid black;"><tbody><tr style="font-weight:bold;"><th>People</th><th>Problem</th><th>Solution?</th><th>Pictures</th></tr>`
+        var t1 = t2 = t3 = `<table style="border-collapse: collapse; border: 1px solid black;"><tbody><tr><th style="border:1px solid black;font-weight:bold;color:white;font-weight:bold;background-color:rgb(39, 78, 19);">People</th><th style="border:1px solid black;font-weight:bold;color:white;font-weight:bold;background-color:rgb(39, 78, 19);">Problem</th><th style="border:1px solid black;font-weight:bold;color:white;font-weight:bold;background-color:rgb(39, 78, 19);">Solution?</th><th style="border:1px solid black;font-weight:bold;color:white;font-weight:bold;background-color:rgb(39, 78, 19);">Pictures</th></tr>`;
         for(var _i = 0; _i < thisDay.commits.length; _i++) {
-            var thisCommit = thisDay.commits[i];
+			console.log('_i',thisDay.commits.length, _i);
+            var thisCommit = thisDay.commits[_i];
             var thesePictures = "";
-            for(var i = 1; i < 5; i++) {
-                if(thisCommit['picture' + i]) { thesePictures = thesePictures + "https://notes.clh.sh/image/" + thisCommit.id + "/" + i + '<br>'; }
+            for(var __i = 1; __i < 5; __i++) {
+                if(thisCommit['picture' + __i]) { thesePictures = thesePictures + "<a target=\"_blank\" href=\"https://notes.clh.sh/image/" + thisCommit.id + "/" + __i + '">['+__i+']</a>'+(thisCommit['picture' + (__i+1)]?',':'')+''; }
             }
-         
+			console.log('?');
             if(thisCommit.isonteam == 0) {
                 //software
-                t1 = t1 + `<tr><td>${thisCommit.humannames}</td><td>${thisCommit.problem}</td><td>${(thisCommit.solution || "")}</td><td>${thesePictures}</td></tr>` 
+                t1 = t1 + `<tr><td style="border:1px solid black">${thisCommit.humannames}</td><td style="border:1px solid black">${thisCommit.problem}</td><td style="border:1px solid black">${(thisCommit.solution || "")}</td><td style="border:1px solid black">${thesePictures}</td></tr>` 
             } else if(thisCommit.isonteam == 1) {
                 //hardware
-                t2 = t2 + `<tr><td>${thisCommit.humannames}</td><td>${thisCommit.problem}</td><td>${(thisCommit.solution || "")}</td><td>${thesePictures}</td></tr>`
+                t2 = t2 + `<tr><td style="border:1px solid black">${thisCommit.humannames}</td><td style="border:1px solid black">${thisCommit.problem}</td><td style="border:1px solid black">${(thisCommit.solution || "")}</td><td style="border:1px solid black">${thesePictures}</td></tr>`
             } else {
                 //other
-                t3 = t3 + `<tr><td>${thisCommit.humannames}</td><td>${thisCommit.problem}</td><td>${(thisCommit.solution || "")}</td><td>${thesePictures}</td></tr>`
+                t3 = t3 + `<tr><td style="border:1px solid black">${thisCommit.humannames}</td><td style="border:1px solid black">${thisCommit.problem}</td><td style="border:1px solid black">${(thisCommit.solution || "")}</td><td style="border:1px solid black">${thesePictures}</td></tr>`
             }
+			console.log('??',i);
         }
-        t1 = t1 + `</tbody></table>`
-        t2 = t2 + `</tbody></table>`
-        t3 = t3 + `</tbody></table>`
+        t1 = t1 + `</tbody></table><br>`
+        t2 = t2 + `</tbody></table><br>`
+        t3 = t3 + `</tbody></table><br>`
         
-        html = html + t1 + t2 + t3 + `<p style="page-break-after: always"></p>`;
+        html = html + `<p>Software</p>` + t1 + `<p>Hardware</p>` + t2 + `<p>Other</p>` + t3 + `<hr class="pb">`;
     }
     
+	html = html + '</div>'
+	
     return callback(html);
     
 

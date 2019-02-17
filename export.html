@@ -24,9 +24,6 @@
 <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M8.071 21.586l-7.071 1.414 1.414-7.071 14.929-14.929 5.657 5.657-14.929 14.929zm-.493-.921l-4.243-4.243-1.06 5.303 5.303-1.06zm9.765-18.251l-13.3 13.301 4.242 4.242 13.301-13.3-4.243-4.243z"></path></svg>
 </a>-->
 <div class="top-spacer"></div>
-<!-- downloading isn't needed for this version -haha jk it is; i ain't messin with the Docs API--><a href="javascript:void(0)" class="output-button" onclick="modalOpen?hideModal():downloadParse()">
-<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M16.965 2.381c3.593 1.946 6.035 5.749 6.035 10.119 0 6.347-5.153 11.5-11.5 11.5s-11.5-5.153-11.5-11.5c0-4.37 2.442-8.173 6.035-10.119l.608.809c-3.353 1.755-5.643 5.267-5.643 9.31 0 5.795 4.705 10.5 10.5 10.5s10.5-4.705 10.5-10.5c0-4.043-2.29-7.555-5.643-9.31l.608-.809zm-4.965-2.381v14.826l3.747-4.604.753.666-5 6.112-5-6.101.737-.679 3.763 4.608v-14.828h1z"/></svg>
-</a>
 <a href="javascript:void(0)" class="permedit-button" hidden onclick="modalOpen?hideModal():openPermedit()">
 <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" viewBox="0 0 24 24" clip-rule="evenodd"><path d="M16 1c-4.418 0-8 3.582-8 8 0 .585.063 1.155.182 1.704l-8.182 7.296v5h6v-2h2v-2h2l3.066-2.556c.909.359 1.898.556 2.934.556 4.418 0 8-3.582 8-8s-3.582-8-8-8zm-6.362 17l3.244-2.703c.417.164 1.513.703 3.118.703 3.859 0 7-3.14 7-7s-3.141-7-7-7c-3.86 0-7 3.14-7 7 0 .853.139 1.398.283 2.062l-8.283 7.386v3.552h4v-2h2v-2h2.638zm.168-4l-.667-.745-7.139 6.402v1.343l7.806-7zm10.194-7c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2zm-1 0c0-.552-.448-1-1-1s-1 .448-1 1 .448 1 1 1 1-.448 1-1z"/></svg>
 </a>
@@ -50,7 +47,9 @@ Log Out
 </ul>
 </div>
 </a>
-
+<!-- downloading isn't needed for this version<a href="javascript:void(0)" class="output-button" onclick="modalOpen?hideModal():downloadParse()">
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M16.965 2.381c3.593 1.946 6.035 5.749 6.035 10.119 0 6.347-5.153 11.5-11.5 11.5s-11.5-5.153-11.5-11.5c0-4.37 2.442-8.173 6.035-10.119l.608.809c-3.353 1.755-5.643 5.267-5.643 9.31 0 5.795 4.705 10.5 10.5 10.5s10.5-4.705 10.5-10.5c0-4.043-2.29-7.555-5.643-9.31l.608-.809zm-4.965-2.381v14.826l3.747-4.604.753.666-5 6.112-5-6.101.737-.679 3.763 4.608v-14.828h1z"/></svg>
+</a>-->
 </div>
 </div>
 <div id="content">
@@ -139,7 +138,7 @@ Send
 
 </div>
 <div class="modal out modal-table-copy">
-<div style="min-height: -webkit-min-content; min-height: -moz-min-content; min-height: min-content;"><h3><a href="javascript:void(0)" onclick="copyToClip(document.getElementById('output-preview').innerHTML, true)">Copy Data</a></h3> <br>After copying, you can simply paste (CTRL + V) into Google Docs!</div>
+<div style="min-height: -webkit-min-content; min-height: -moz-min-content; min-height: min-content;"><h3><a href="javascript:void(0)" onclick="copyToClip(document.getElementById('output-preview').innerHTML, true)">Copy Table</a></h3> <br>After copying, you can simply paste (CTRL + V) into Google Docs!</div>
 
 <div style="min-height: -webkit-min-content; min-height: -moz-min-content; min-height: min-content; min-width: -webkit-min-content; min-width: -moz-min-content; min-width: min-content;"><h3>Preview: </h3><div id="output-preview" style="padding: 10px; border: 1px solid black; background: #ffffff;"></div></div>
 </div>

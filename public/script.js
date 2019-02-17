@@ -28,6 +28,7 @@ var prof = usr.getBasicProfile();
 	  //hide all o' dem thingies that we don't want the normal peeps to see
 	  try {
 		if(JSON.parse(localStorage.getItem('self')).role >= 4) { document.querySelector('.permedit-button').hidden = false; }
+		if(JSON.parse(localStorage.getItem('self')).role >= 4) { document.querySelector('.output-button').hidden = false; }
 	  } catch(e) {}
 	  reload(0);
     }
@@ -344,31 +345,31 @@ function downloadParse() {
 	container.classList.remove('out');
 	container.scrollTop = 0
     modalOpen = true
+	var search = new URLSearchParams(location.search);
+	search.set('open','download');
+	history.replaceState(null, '', "?" + search.toString());
 	
-	//it's formatting time!
-	var tables = [
-        ['<tr style="height:0pt"><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;background-color:#274e13;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#ffffff;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Tasks</span></p></td><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;background-color:#274e13;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#ffffff;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Reflections</span></p></td></tr>'],
-		['<tr style="height:0pt"><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;background-color:#274e13;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#ffffff;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Tasks</span></p></td><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;background-color:#274e13;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#ffffff;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Reflections</span></p></td></tr>'],
-		['<tr style="height:0pt"><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;background-color:#274e13;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#ffffff;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Tasks</span></p></td><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;background-color:#274e13;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#ffffff;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Reflections</span></p></td></tr>']
-	];
+	snackbar('Loading exported data from server',1500);
 	
-	Object.values(totalDocs).forEach(x => {
-	    tables[x.d.team].push(
-		    '<tr style="height:0pt"><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;background-color:#93c47d;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Names: ' + x.d.names.HTML() +'</span></p></td><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">'+ x.d.content.HTML() +'</span></p></td></tr>'
-		)
-	});
+	var req = new XMLHttpRequest();
 	
-	var finished = '<meta charset="utf-8"><div style="font-weight:normal;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Software</span></p><div dir="ltr" style="margin-left:0pt;"><table style="border:none;border-collapse:collapse"><colgroup><col width="133" /></colgroup>' +
-	               tables[0].join('') +
-				   ((tables[0].length-1)?'':'<tr style="height:0pt"><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;background-color:#93c47d;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Names: </span></p></td><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"></span></p></td></tr>') + 
-	               '</table></div><br /><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Hardware</span></p><div dir="ltr" style="margin-left:0pt;"><table style="border:none;border-collapse:collapse"><colgroup><col width="133" /></colgroup>' + 
-	               tables[1].join('') +
-				   ((tables[1].length-1)?'':'<tr style="height:0pt"><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;background-color:#93c47d;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Names: </span></p></td><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"></span></p></td></tr>') + 
-	               '</table></div><br /><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Other</span></p><div dir="ltr" style="margin-left:0pt;"><table style="border:none;border-collapse:collapse"><colgroup><col width="133" /></colgroup>' + 
-	               tables[2].join('') +
-				   ((tables[2].length-1)?'':'<tr style="height:0pt"><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;background-color:#93c47d;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Names: </span></p></td><td style="border-left:solid #000000 1pt;border-right:solid #000000 1pt;border-bottom:solid #000000 1pt;border-top:solid #000000 1pt;vertical-align:top;padding:5pt 5pt 5pt 5pt;"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size:10pt;font-family:\'Times New Roman\';color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"></span></p></td></tr>') + 
-	               '</table></div></div>';
-    document.getElementById('output-preview').innerHTML = finished;
+	req.open('GET','/api/export/html');
+	
+	req.setRequestHeader("Authorization",localStorage.getItem('id') + ':' + localStorage.getItem('token'));
+	
+	
+    req.onload = function() {
+		if(req.status == 200) {
+			document.getElementById('output-preview').innerHTML = req.responseText;
+		} else {
+			req.onerror();
+			document.getElementById('output-preview').innerHTML = '<p style="font-family:monospace">ERR</p>';
+		}
+	}
+	req.onerror = function() {
+		snackbar('Error loading data',1500,'err');
+	}
+	req.send();
 }
 
 function hideModal () {
@@ -421,6 +422,9 @@ window.addEventListener('load', function() {
 		break
 		case 'permedit':
 			openPermedit();
+		break
+		case 'download':
+			downloadParse();
 		break
 	}
 });
@@ -517,6 +521,7 @@ function fileToBase64(file,cb) {
 function copyToClip(str,notify) {
   function listener(e) {
     e.clipboardData.setData("text/html", str);
+    e.clipboardData.setData("text/plain", str);
     e.preventDefault();
 	if(notify) { snackbar('Data copied!',3000,'suc') }
   }
