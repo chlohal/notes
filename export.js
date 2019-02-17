@@ -28,19 +28,16 @@ module.exports = function(commits, callback) {
     });
     // > make html for each day
     for(var i = 0; i < commitDays.length; i++) {
-		console.log('i',commitDays.length, i);
         var thisDay = commitDays[i];
         html = html + `<h2>Documentation for ${thisDay.day}</h2>`
         
         var t1 = t2 = t3 = `<table style="border-collapse: collapse; border: 1px solid black;"><tbody><tr><th style="border:1px solid black;font-weight:bold;color:white;font-weight:bold;background-color:rgb(39, 78, 19);">People</th><th style="border:1px solid black;font-weight:bold;color:white;font-weight:bold;background-color:rgb(39, 78, 19);">Problem</th><th style="border:1px solid black;font-weight:bold;color:white;font-weight:bold;background-color:rgb(39, 78, 19);">Solution?</th><th style="border:1px solid black;font-weight:bold;color:white;font-weight:bold;background-color:rgb(39, 78, 19);">Pictures</th></tr>`;
         for(var _i = 0; _i < thisDay.commits.length; _i++) {
-			console.log('_i',thisDay.commits.length, _i);
             var thisCommit = thisDay.commits[_i];
             var thesePictures = "";
             for(var __i = 1; __i < 5; __i++) {
                 if(thisCommit['picture' + __i]) { thesePictures = thesePictures + "<a target=\"_blank\" href=\"https://notes.clh.sh/image/" + thisCommit.id + "/" + __i + '">['+__i+']</a>'+(thisCommit['picture' + (__i+1)]?',':'')+''; }
             }
-			console.log('?');
             if(thisCommit.isonteam == 0) {
                 //software
                 t1 = t1 + `<tr><td style="border:1px solid black">${thisCommit.humannames}</td><td style="border:1px solid black">${thisCommit.problem}</td><td style="border:1px solid black">${(thisCommit.solution || "")}</td><td style="border:1px solid black">${thesePictures}</td></tr>` 
@@ -51,7 +48,6 @@ module.exports = function(commits, callback) {
                 //other
                 t3 = t3 + `<tr><td style="border:1px solid black">${thisCommit.humannames}</td><td style="border:1px solid black">${thisCommit.problem}</td><td style="border:1px solid black">${(thisCommit.solution || "")}</td><td style="border:1px solid black">${thesePictures}</td></tr>`
             }
-			console.log('??',i);
         }
         t1 = t1 + `</tbody></table><br>`
         t2 = t2 + `</tbody></table><br>`

@@ -6,7 +6,6 @@ String.prototype.HTML = function () {
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
  }
-
 var currentIndex = 0, totalDocs = {}, modalOpen = false;
 function loginReq(usr) {
 var prof = usr.getBasicProfile();
@@ -35,6 +34,20 @@ var prof = usr.getBasicProfile();
   };
   console.log({"type":0,"token":tkn,"googleid":prof.getId()});
   xhr.send(JSON.stringify({"type":0,"token":tkn,"googleid":prof.getId()}));
+}
+function openHome() {
+	document.querySelector('.home-button > svg').style.background = '#000000'
+	document.querySelector('.home-button > svg').style.fill = '#ffffff'
+	document.querySelector('.content-logged-in').style.overflowY = 'hidden'
+	document.querySelector('.content-logged-in').scrollTop = 0
+	var container = document.querySelector('.modal-home');
+	container.classList.remove('out');
+	container.scrollTop = 0;
+	modalOpen = true;
+	var search = new URLSearchParams(location.search);
+	search.set('open','home');
+	history.replaceState(null, '', "?" + search.toString());
+        reload();
 }
 function formatAndSubmit() {
 	
@@ -125,18 +138,13 @@ function reload(x,fromTime,toTime) {
 
 var req = new XMLHttpRequest();
 
-var reloadanimelem = document.getElementById('reloadanimcontainer');
-reloadanimelem.innerHTML = '<svg width="200px"  height="200px"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-rolling" style="background: none;"><circle cx="50" cy="50" fill="none" ng-attr-stroke="{{config.color}}" ng-attr-stroke-width="{{config.width}}" ng-attr-r="{{config.radius}}" ng-attr-stroke-dasharray="{{config.dasharray}}" stroke="#000000" stroke-width="2" r="35" stroke-dasharray="164.93361431346415 56.97787143782138" transform="rotate(29.7828 50 50)"><animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;360 50 50" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"></animateTransform></circle></svg>';
-
 req.onreadystatechange = function() {
 if(req.readyState == 4) {
  if(req.status == 200) {
      var uploadList = document.querySelector('.postlist');
 	 var parsedResp = JSON.parse(req.responseText);
 	 var eventualHtml = '';
-	 
-     reloadanimelem.innerHTML = '<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" viewBox="0 0 24 24" clip-rule="evenodd"><path d="M7 9h-7v-7h1v5.2c1.853-4.237 6.083-7.2 11-7.2 6.623 0 12 5.377 12 12s-5.377 12-12 12c-6.286 0-11.45-4.844-11.959-11h1.004c.506 5.603 5.221 10 10.955 10 6.071 0 11-4.929 11-11s-4.929-11-11-11c-4.66 0-8.647 2.904-10.249 7h5.249v1z"/></svg>'
-     
+
 	 parsedResp.forEach(x => {
 	     totalDocs[x.id] = x
 	 });
@@ -252,6 +260,7 @@ function openCandyBank() {
 }
 var permissionData = [];
 function openPermedit() {
+        
 	document.querySelector('.permedit-button > svg').style.background = '#000000'
 	document.querySelector('.permedit-button > svg').style.fill = '#ffffff'
 	document.querySelector('.content-logged-in').style.overflowY = 'hidden'
@@ -337,6 +346,7 @@ function loadEditingAndSuch(cb) {
 }
 function downloadParse() {
 
+    
     document.querySelector('.output-button > svg').style.background = '#000000'
     document.querySelector('.output-button > svg').style.fill = '#ffffff'
 	document.querySelector('.content-logged-in').style.overflowY = 'hidden'
@@ -426,7 +436,10 @@ window.addEventListener('load', function() {
 		case 'download':
 			downloadParse();
 		break
-	}
+	        default:
+                        openHome();
+                break
+        }
 });
 
 function signOut() {

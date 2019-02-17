@@ -204,7 +204,7 @@ app.put('/api/permissions/setRole', function(req, resp) {
 		if(newRole > 8) { return resp.status(400).send("ERRMSG:That is not a valid role number!"); }
 		db.get('SELECT id, role FROM Users WHERE id = ?', [req.body.id], function(err, thatUser) {
 			if(thatUser.role == 8) { return resp.status(400).send("ERRMSG:You are not allowed to change users with that role!"); }
-			db.run('UPDATE Users SET candycredit = ? WHERE id = ?',[newRole, req.body.id], function(err) {
+			db.run('UPDATE Users SET role = ? WHERE id = ?',[newRole, req.body.id], function(err) {
 				if(err) { return resp.sendStatus(500) }
 				resp.sendStatus(200);
 			});
@@ -236,7 +236,7 @@ app.post('/api/submit', function(req,resp) {
 		if(!userData) { return resp.sendStatus(403); }
 		if(userData.token !== userToken) { return resp.sendStatus(403); }
 		
-		if(!userdata.role) { return resp.sendStatus(401); }
+		if(!userData.role) { return resp.sendStatus(401); }
 		
 		//thus, we have verified that the user is who they say they are. Great!
 		
