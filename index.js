@@ -45,14 +45,13 @@ function makeId(tableName) {
 }
 db.serialize(function(){
   if (!exists) {
-    db.run('CREATE TABLE Users (id VARCHAR(20), token VARCHAR(40), type TINYINT, googleid TEXT, googletoken TEXT, emailid CHAR(6), candycredit INT, role TINYINT, miscdata TEXT)');
+    db.run('CREATE TABLE Users (id VARCHAR(20), token VARCHAR(40), type TINYINT, googleid TEXT, emailid CHAR(6), candycredit INT, role TINYINT, miscdata TEXT)');
     db.run('CREATE TABLE Commits (id VARCHAR(20), creator VARCHAR(20), type TINYINT, isonteam TINYINT(2), humannames TEXT, creationDate INT, problem TEXT, challenges TEXT, didsolve TINYINT(1), solution TEXT, picture1 BLOB, picture2 BLOB, picture3 BLOB, picture4 BLOB, mimetypes TEXT, miscdata TEXT)');
     console.log('Database created, loaded!');
   }
   else {
     console.log('Database loaded!');
   }
-  //console.log('database serialization completed');
 });
 
 app.get('/', function(req,res) {
@@ -63,6 +62,7 @@ app.use(express.static('public'));
 app.get('/image/:commit_id/:image_index', function (req, resp) {
 	db.get('SELECT id, picture1, picture2, picture3, picture4, mimetypes FROM Commits WHERE id = ? AND ? IS NOT NULL', [req.params.commit_id,'picture' + req.params.image_index], function(err, data) {
 		if(!data) return req.sendStatus(404);
+		if(err) return req.sendStatus(500);
 		var buffer = data['picture' + req.params.image_index];
 		var mime = JSON.parse(data.mimetypes)['b' + req.params.image_index].split(/:|;/)[1]
 		
@@ -70,7 +70,29 @@ app.get('/image/:commit_id/:image_index', function (req, resp) {
 		return resp.end(buffer);
 	})
 });
-
+app.delete('/api/commits', function (req, resp) {
+	if(!req.headers.authorization) { return resp.sendStatus(401) }
+	
+	var userId = req.headers.authorization.split(':')[0], userToken = req.headers.authorization.split(':')[1];
+	
+	db.get('SELECT id, token, role FROM Users WHERE id = ? AND token = ?', [userId, userToken], function(err, userData) {
+		if(err) { return resp.sendStatus(500); }
+		if(!userData) { return resp.sendStatus(403); }
+		if(userData.token !== userToken) { return resp.sendStatus(403); }
+		
+		if(userData.role < 7) return resp.sendStatus(403);
+		
+		if(!req.query.id) return resp.sendStatus(400);
+		
+		db.get('SELECT id FROM Commits WHERE id = ?', [req.query.id], function(err,data) {
+			if(!data) return resp.sendStatus(404);
+			db.run('DELETE FROM Commits WHERE id = ?', [req.query.id], function(err) {
+				if(err) return resp.sendStatus(500);
+				resp.sendStatus(200);
+			});
+		});
+	});
+});
 app.post('/api/createUser', function (req, resp) {
     if(!req.body) { return resp.sendStatus(500) }
     if(typeof req.body.type !== 'number') { return resp.status(400).send('Invalid account type') }
@@ -109,20 +131,19 @@ app.post('/api/createUser', function (req, resp) {
 		if(userEmailID == 'cbh221') { userRole = 8 }
 		
         //make the record, then tell the user about it
-        db.run('INSERT INTO Users (id, token, type, googleid, googletoken, candycredit, emailid, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[thisid, thistkn, req.body.type, body.sub, req.body.token, 0, userEmailID, userRole],function(err) {
+        db.run('INSERT INTO Users (id, token, type, googleid, candycredit, emailid, role) VALUES (?, ?, ?, ?, ?, ?, ?)',[thisid, thistkn, req.body.type, body.sub, 0, userEmailID, userRole],function(err) {
           if(err) { console.log(err); return resp.sendStatus(500) }
 		  var responseprep = {
 			  id: thisid,
 			  token: thistkn,
 			  type: req.body.type,
 			  googleid: body.sub,
-			  googletoken: req.body.token,
 			  candycredit: 0,
 			  emailid: userEmailID,
 			  role: userRole,
 			  res: "201 Created"
 		  }
-          resp.status(201).send('{"res": "201 Created","token":"'+thistkn+'","id":"'+thisid+'"}');
+          resp.status(201).send(responseprep);
         });
       });//wow, look at all those callbacks
     });
@@ -244,7 +265,6 @@ app.post('/api/submit', function(req,resp) {
 		var submission = req.body.d;
 		//wait, hold on: did they give us all the mandatory fields?
 		if(!submission.humannames || !submission.problem || submission.type === undefined || !submission.challenges || submission.isonteam === undefined || submission.didsolve === undefined || (submission.didsolve && !submission.solution)) {
-			console.log(submission);
 			return resp.status(400).send('Mandatory fields not included');
 		}
 		//... in the right order? (i.e. is there a picture1 but no picture2?)
@@ -295,7 +315,7 @@ app.post('/api/submit', function(req,resp) {
             if(err) { return resp.sendStatus(500) }
             resp.status(201).send('{"res": "201 Created","id":"'+thisid+'"}');
         });
-		//give the user a Candy Credit(tm)
+		//give the user a Candy Credit(tm) ((not really tm))
 		db.run('UPDATE Users SET candycredit = candycredit + 1 WHERE id = ?', [userId], function(err) {
 			if(err) { console.log(err) }
 		});
@@ -357,5 +377,5 @@ function makeTheHeckingDoc(callback) {
 
 
 var server = app.listen(5557, function() {
-  console.log('Your app is listening on port ' + server.address().port);
+  console.log('Listening on port ' + server.address().port);
 });

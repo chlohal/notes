@@ -12,7 +12,7 @@
 
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 
-<link href="https://fonts.googleapis.com/css?family=Open+Sans|Oswald:400,300" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oswald:400,300|Montserrat" rel="stylesheet">
 
 <link href="/style.css" rel="stylesheet">
 <script src="/script.js"></script>
@@ -21,20 +21,23 @@
 <div id="top">
 <div id="top-in" class="out">
 <a href="javascript:void(0)" class="home-button" onclick="hideModal();openHome()">
-<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M22 11.414v12.586h-20v-12.586l-1.293 1.293-.707-.707 12-12 12 12-.707.707-1.293-1.293zm-6 11.586h5v-12.586l-9-9-9 9v12.586h5v-9h8v9zm-1-7.889h-6v7.778h6v-7.778z"/></svg>
+<svg width="24" height="24" viewBox="0 0 24 24" title="Home" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M22 11.414v12.586h-20v-12.586l-1.293 1.293-.707-.707 12-12 12 12-.707.707-1.293-1.293zm-6 11.586h5v-12.586l-9-9-9 9v12.586h5v-9h8v9zm-1-7.889h-6v7.778h6v-7.778z"/></svg>
 </a>
 <a href="javascript:void(0)" class="output-button" onclick="hideModal();downloadParse()">
-<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M16.965 2.381c3.593 1.946 6.035 5.749 6.035 10.119 0 6.347-5.153 11.5-11.5 11.5s-11.5-5.153-11.5-11.5c0-4.37 2.442-8.173 6.035-10.119l.608.809c-3.353 1.755-5.643 5.267-5.643 9.31 0 5.795 4.705 10.5 10.5 10.5s10.5-4.705 10.5-10.5c0-4.043-2.29-7.555-5.643-9.31l.608-.809zm-4.965-2.381v14.826l3.747-4.604.753.666-5 6.112-5-6.101.737-.679 3.763 4.608v-14.828h1z"/></svg>
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg"  title="Download" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M16.965 2.381c3.593 1.946 6.035 5.749 6.035 10.119 0 6.347-5.153 11.5-11.5 11.5s-11.5-5.153-11.5-11.5c0-4.37 2.442-8.173 6.035-10.119l.608.809c-3.353 1.755-5.643 5.267-5.643 9.31 0 5.795 4.705 10.5 10.5 10.5s10.5-4.705 10.5-10.5c0-4.043-2.29-7.555-5.643-9.31l.608-.809zm-4.965-2.381v14.826l3.747-4.604.753.666-5 6.112-5-6.101.737-.679 3.763 4.608v-14.828h1z"/></svg>
 </a>
 <a href="javascript:void(0)" class="permedit-button" hidden onclick="hideModal();openPermedit()">
-<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" viewBox="0 0 24 24" clip-rule="evenodd"><path d="M16 1c-4.418 0-8 3.582-8 8 0 .585.063 1.155.182 1.704l-8.182 7.296v5h6v-2h2v-2h2l3.066-2.556c.909.359 1.898.556 2.934.556 4.418 0 8-3.582 8-8s-3.582-8-8-8zm-6.362 17l3.244-2.703c.417.164 1.513.703 3.118.703 3.859 0 7-3.14 7-7s-3.141-7-7-7c-3.86 0-7 3.14-7 7 0 .853.139 1.398.283 2.062l-8.283 7.386v3.552h4v-2h2v-2h2.638zm.168-4l-.667-.745-7.139 6.402v1.343l7.806-7zm10.194-7c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2zm-1 0c0-.552-.448-1-1-1s-1 .448-1 1 .448 1 1 1 1-.448 1-1z"/></svg>
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" title="Permissions" fill-rule="evenodd" viewBox="0 0 24 24" clip-rule="evenodd"><path d="M16 1c-4.418 0-8 3.582-8 8 0 .585.063 1.155.182 1.704l-8.182 7.296v5h6v-2h2v-2h2l3.066-2.556c.909.359 1.898.556 2.934.556 4.418 0 8-3.582 8-8s-3.582-8-8-8zm-6.362 17l3.244-2.703c.417.164 1.513.703 3.118.703 3.859 0 7-3.14 7-7s-3.141-7-7-7c-3.86 0-7 3.14-7 7 0 .853.139 1.398.283 2.062l-8.283 7.386v3.552h4v-2h2v-2h2.638zm.168-4l-.667-.745-7.139 6.402v1.343l7.806-7zm10.194-7c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2zm-1 0c0-.552-.448-1-1-1s-1 .448-1 1 .448 1 1 1 1-.448 1-1z"/></svg>
 </a>
 <a href="javascript:void(0)" class="candybank-button" onclick="hideModal();openCandyBank()">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M 17.421875 0.91015625 A 0.50005 0.50005 0 0 0 16.970703 1.1699219 L 14.644531 5.4238281 C 14.10525 5.3710758 13.54536 5.3918236 12.978516 5.4921875 C 11.321556 5.7855648 9.597675 6.6972469 8.1484375 8.1464844 C 6.6992004 9.5957215 5.7875175 11.319602 5.4941406 12.976562 C 5.3931385 13.547011 5.3736323 14.111888 5.4277344 14.654297 L 1.25 17.066406 A 0.50005 0.50005 0 0 0 1.1464844 17.853516 C 1.5933654 18.300397 2.176463 18.293419 2.5136719 18.273438 C 2.8508808 18.253457 2.9548011 18.222809 3.1582031 18.414062 C 3.2581241 18.508022 3.275039 18.556806 3.2910156 18.634766 C 3.3069926 18.712726 3.3033476 18.831564 3.2910156 18.998047 C 3.2663516 19.331012 3.2431876 19.922133 3.6855469 20.392578 C 3.9065914 20.627657 4.1818377 20.768959 4.4335938 20.820312 C 4.6853498 20.871662 4.9026004 20.851241 5.0742188 20.837891 C 5.4174554 20.811191 5.5134143 20.774251 5.7109375 20.957031 C 5.8093905 21.048141 5.8241691 21.093298 5.8398438 21.169922 C 5.8555187 21.246542 5.8527508 21.36664 5.8398438 21.533203 C 5.8140298 21.86633 5.7845968 22.4563 6.2226562 22.929688 A 0.50005 0.50005 0 0 0 7.0292969 22.830078 L 9.3574219 18.574219 C 9.8962703 18.626786 10.457091 18.606136 11.023438 18.505859 C 12.680397 18.212483 14.406232 17.3008 15.855469 15.851562 C 17.304706 14.402325 18.214434 12.680397 18.507812 11.023438 C 18.608815 10.452989 18.628321 9.8881119 18.574219 9.3457031 L 22.75 6.9335938 A 0.50005 0.50005 0 0 0 22.853516 6.1464844 C 22.406635 5.6996033 21.823537 5.7065798 21.486328 5.7265625 C 21.149119 5.7465455 21.045199 5.7771965 20.841797 5.5859375 C 20.741877 5.4919825 20.724961 5.4431942 20.708984 5.3652344 C 20.693004 5.2872744 20.696654 5.1684356 20.708984 5.0019531 C 20.733644 4.6689882 20.756814 4.0778672 20.314453 3.6074219 C 20.093409 3.3723428 19.818162 3.2310419 19.566406 3.1796875 C 19.31465 3.1283335 19.0974 3.1487614 18.925781 3.1621094 C 18.582545 3.1888054 18.486586 3.2257514 18.289062 3.0429688 C 18.190613 2.9518628 18.175831 2.9067015 18.160156 2.8300781 C 18.144486 2.7534551 18.147246 2.6333605 18.160156 2.4667969 C 18.185966 2.1336696 18.215406 1.5436994 17.777344 1.0703125 A 0.50005 0.50005 0 0 0 17.421875 0.91015625 z M 17.175781 2.8828125 C 17.180981 2.9372335 17.167787 2.9729045 17.179688 3.03125 C 17.231198 3.2830641 17.374781 3.5584498 17.611328 3.7773438 C 18.083805 4.214561 18.672143 4.1859601 19.003906 4.1601562 C 19.169788 4.1472542 19.287615 4.1443232 19.365234 4.1601562 C 19.442854 4.1759892 19.491981 4.1930482 19.585938 4.2929688 C 19.773577 4.4925235 19.736272 4.5856993 19.710938 4.9277344 C 19.698268 5.0987519 19.678949 5.3149912 19.730469 5.5664062 C 19.781989 5.8178215 19.923124 6.0934086 20.158203 6.3144531 C 20.528281 6.662437 20.921785 6.6380278 21.257812 6.640625 L 18.361328 8.3144531 C 18.159286 7.6870942 17.833497 7.1147474 17.359375 6.640625 C 16.881398 6.1626475 16.303321 5.836308 15.669922 5.6347656 L 17.175781 2.8828125 z M 14.183594 6.390625 C 14.330505 6.3928219 14.47253 6.4042914 14.613281 6.4199219 A 0.50005 0.50005 0 0 0 15.027344 6.4902344 C 15.660529 6.6280602 16.215338 6.9106501 16.652344 7.3476562 C 17.085363 7.780676 17.368532 8.3291225 17.507812 8.9550781 A 0.50005 0.50005 0 0 0 17.582031 9.40625 C 17.630092 9.8575999 17.613119 10.341142 17.523438 10.847656 C 17.271704 12.269412 16.462132 13.828882 15.146484 15.144531 C 13.830836 16.460179 12.269412 17.269751 10.847656 17.521484 C 10.333853 17.612457 9.8435946 17.630837 9.3867188 17.580078 A 0.50005 0.50005 0 0 0 8.9746094 17.509766 C 8.3412585 17.371974 7.7847535 17.089441 7.3476562 16.652344 C 6.9091938 16.213881 6.6255633 15.655363 6.4882812 15.019531 A 0.50005 0.50005 0 0 0 6.4199219 14.619141 C 6.3683603 14.160649 6.3871642 13.668286 6.4785156 13.152344 C 6.7302481 11.730587 7.5398207 10.169163 8.8554688 8.8535156 C 10.171117 7.537867 11.730587 6.7302482 13.152344 6.4785156 C 13.507783 6.4155825 13.853697 6.3856918 14.183594 6.390625 z M 10.005859 9.4160156 A 0.50005 0.50005 0 0 0 9.6582031 9.5566406 C 8.5844663 10.566018 7.8366594 11.873516 7.5117188 13.310547 A 0.50059563 0.50059563 0 1 0 8.4882812 13.53125 C 8.7693407 12.288281 9.4135336 11.157779 10.341797 10.285156 A 0.50005 0.50005 0 0 0 10.005859 9.4160156 z M 5.640625 15.683594 C 5.8426669 16.310953 6.1665025 16.885253 6.640625 17.359375 C 7.1185367 17.837287 7.6987357 18.16173 8.3320312 18.363281 L 6.8242188 21.117188 C 6.8190387 21.062767 6.8322525 21.027098 6.8203125 20.96875 C 6.7687995 20.716936 6.6252185 20.44155 6.3886719 20.222656 C 5.9161951 19.785439 5.327857 19.81404 4.9960938 19.839844 C 4.8302121 19.852744 4.7123846 19.855674 4.6347656 19.839844 C 4.5571466 19.824014 4.508018 19.806954 4.4140625 19.707031 C 4.2264215 19.507477 4.2637266 19.414301 4.2890625 19.072266 C 4.3017305 18.901248 4.3210543 18.685009 4.2695312 18.433594 C 4.2180112 18.182179 4.076876 17.906591 3.8417969 17.685547 C 3.4717188 17.337563 3.0782151 17.361972 2.7421875 17.359375 L 5.640625 15.683594 z "/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" title="Candy" viewBox="0 0 24 24" ><path d="M 17.421875 0.91015625 A 0.50005 0.50005 0 0 0 16.970703 1.1699219 L 14.644531 5.4238281 C 14.10525 5.3710758 13.54536 5.3918236 12.978516 5.4921875 C 11.321556 5.7855648 9.597675 6.6972469 8.1484375 8.1464844 C 6.6992004 9.5957215 5.7875175 11.319602 5.4941406 12.976562 C 5.3931385 13.547011 5.3736323 14.111888 5.4277344 14.654297 L 1.25 17.066406 A 0.50005 0.50005 0 0 0 1.1464844 17.853516 C 1.5933654 18.300397 2.176463 18.293419 2.5136719 18.273438 C 2.8508808 18.253457 2.9548011 18.222809 3.1582031 18.414062 C 3.2581241 18.508022 3.275039 18.556806 3.2910156 18.634766 C 3.3069926 18.712726 3.3033476 18.831564 3.2910156 18.998047 C 3.2663516 19.331012 3.2431876 19.922133 3.6855469 20.392578 C 3.9065914 20.627657 4.1818377 20.768959 4.4335938 20.820312 C 4.6853498 20.871662 4.9026004 20.851241 5.0742188 20.837891 C 5.4174554 20.811191 5.5134143 20.774251 5.7109375 20.957031 C 5.8093905 21.048141 5.8241691 21.093298 5.8398438 21.169922 C 5.8555187 21.246542 5.8527508 21.36664 5.8398438 21.533203 C 5.8140298 21.86633 5.7845968 22.4563 6.2226562 22.929688 A 0.50005 0.50005 0 0 0 7.0292969 22.830078 L 9.3574219 18.574219 C 9.8962703 18.626786 10.457091 18.606136 11.023438 18.505859 C 12.680397 18.212483 14.406232 17.3008 15.855469 15.851562 C 17.304706 14.402325 18.214434 12.680397 18.507812 11.023438 C 18.608815 10.452989 18.628321 9.8881119 18.574219 9.3457031 L 22.75 6.9335938 A 0.50005 0.50005 0 0 0 22.853516 6.1464844 C 22.406635 5.6996033 21.823537 5.7065798 21.486328 5.7265625 C 21.149119 5.7465455 21.045199 5.7771965 20.841797 5.5859375 C 20.741877 5.4919825 20.724961 5.4431942 20.708984 5.3652344 C 20.693004 5.2872744 20.696654 5.1684356 20.708984 5.0019531 C 20.733644 4.6689882 20.756814 4.0778672 20.314453 3.6074219 C 20.093409 3.3723428 19.818162 3.2310419 19.566406 3.1796875 C 19.31465 3.1283335 19.0974 3.1487614 18.925781 3.1621094 C 18.582545 3.1888054 18.486586 3.2257514 18.289062 3.0429688 C 18.190613 2.9518628 18.175831 2.9067015 18.160156 2.8300781 C 18.144486 2.7534551 18.147246 2.6333605 18.160156 2.4667969 C 18.185966 2.1336696 18.215406 1.5436994 17.777344 1.0703125 A 0.50005 0.50005 0 0 0 17.421875 0.91015625 z M 17.175781 2.8828125 C 17.180981 2.9372335 17.167787 2.9729045 17.179688 3.03125 C 17.231198 3.2830641 17.374781 3.5584498 17.611328 3.7773438 C 18.083805 4.214561 18.672143 4.1859601 19.003906 4.1601562 C 19.169788 4.1472542 19.287615 4.1443232 19.365234 4.1601562 C 19.442854 4.1759892 19.491981 4.1930482 19.585938 4.2929688 C 19.773577 4.4925235 19.736272 4.5856993 19.710938 4.9277344 C 19.698268 5.0987519 19.678949 5.3149912 19.730469 5.5664062 C 19.781989 5.8178215 19.923124 6.0934086 20.158203 6.3144531 C 20.528281 6.662437 20.921785 6.6380278 21.257812 6.640625 L 18.361328 8.3144531 C 18.159286 7.6870942 17.833497 7.1147474 17.359375 6.640625 C 16.881398 6.1626475 16.303321 5.836308 15.669922 5.6347656 L 17.175781 2.8828125 z M 14.183594 6.390625 C 14.330505 6.3928219 14.47253 6.4042914 14.613281 6.4199219 A 0.50005 0.50005 0 0 0 15.027344 6.4902344 C 15.660529 6.6280602 16.215338 6.9106501 16.652344 7.3476562 C 17.085363 7.780676 17.368532 8.3291225 17.507812 8.9550781 A 0.50005 0.50005 0 0 0 17.582031 9.40625 C 17.630092 9.8575999 17.613119 10.341142 17.523438 10.847656 C 17.271704 12.269412 16.462132 13.828882 15.146484 15.144531 C 13.830836 16.460179 12.269412 17.269751 10.847656 17.521484 C 10.333853 17.612457 9.8435946 17.630837 9.3867188 17.580078 A 0.50005 0.50005 0 0 0 8.9746094 17.509766 C 8.3412585 17.371974 7.7847535 17.089441 7.3476562 16.652344 C 6.9091938 16.213881 6.6255633 15.655363 6.4882812 15.019531 A 0.50005 0.50005 0 0 0 6.4199219 14.619141 C 6.3683603 14.160649 6.3871642 13.668286 6.4785156 13.152344 C 6.7302481 11.730587 7.5398207 10.169163 8.8554688 8.8535156 C 10.171117 7.537867 11.730587 6.7302482 13.152344 6.4785156 C 13.507783 6.4155825 13.853697 6.3856918 14.183594 6.390625 z M 10.005859 9.4160156 A 0.50005 0.50005 0 0 0 9.6582031 9.5566406 C 8.5844663 10.566018 7.8366594 11.873516 7.5117188 13.310547 A 0.50059563 0.50059563 0 1 0 8.4882812 13.53125 C 8.7693407 12.288281 9.4135336 11.157779 10.341797 10.285156 A 0.50005 0.50005 0 0 0 10.005859 9.4160156 z M 5.640625 15.683594 C 5.8426669 16.310953 6.1665025 16.885253 6.640625 17.359375 C 7.1185367 17.837287 7.6987357 18.16173 8.3320312 18.363281 L 6.8242188 21.117188 C 6.8190387 21.062767 6.8322525 21.027098 6.8203125 20.96875 C 6.7687995 20.716936 6.6252185 20.44155 6.3886719 20.222656 C 5.9161951 19.785439 5.327857 19.81404 4.9960938 19.839844 C 4.8302121 19.852744 4.7123846 19.855674 4.6347656 19.839844 C 4.5571466 19.824014 4.508018 19.806954 4.4140625 19.707031 C 4.2264215 19.507477 4.2637266 19.414301 4.2890625 19.072266 C 4.3017305 18.901248 4.3210543 18.685009 4.2695312 18.433594 C 4.2180112 18.182179 4.076876 17.906591 3.8417969 17.685547 C 3.4717188 17.337563 3.0782151 17.361972 2.7421875 17.359375 L 5.640625 15.683594 z "/></svg>
+</a>
+<a href="javascript:void(0)" class="archive-button" onclick="hideModal();openArchivePanel()">
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" title="Archive" fill-rule="evenodd" viewBox="0 0 24 24" clip-rule="evenodd"><path d="M24 22h-24v-10.014l5.477-9.986h13.069l5.454 9.986v10.014zm-1-9h-22v8h22v-8zm-16.931-10l-4.936 9h21.735l-4.915-9h-11.884zm12.931 6v1h-14v-1h14zm-1-2v1h-12v-1h12zm-1-2v1h-10v-1h10z"/></svg>
 </a>
 <div class="top-spacer"></div>
 <a href="javascript:void(0)" id="accountcontainer">
-<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M12 0c-5.083 0-8.465 4.949-3.733 13.678 1.596 2.945-1.725 3.641-5.09 4.418-3.073.709-3.187 2.235-3.177 4.904l.004 1h23.99l.004-.969c.012-2.688-.093-4.223-3.177-4.935-3.438-.794-6.639-1.49-5.09-4.418 4.719-8.912 1.251-13.678-3.731-13.678m0 1c1.89 0 3.39.764 4.225 2.15 1.354 2.251.866 5.824-1.377 10.06-.577 1.092-.673 2.078-.283 2.932.937 2.049 4.758 2.632 6.032 2.928 2.303.534 2.412 1.313 2.401 3.93h-21.998c-.01-2.615.09-3.396 2.401-3.93 1.157-.266 5.138-.919 6.049-2.94.387-.858.284-1.843-.304-2.929-2.231-4.115-2.744-7.764-1.405-10.012.84-1.412 2.353-2.189 4.259-2.189"/></svg>
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" title="User Menu" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M12 0c-5.083 0-8.465 4.949-3.733 13.678 1.596 2.945-1.725 3.641-5.09 4.418-3.073.709-3.187 2.235-3.177 4.904l.004 1h23.99l.004-.969c.012-2.688-.093-4.223-3.177-4.935-3.438-.794-6.639-1.49-5.09-4.418 4.719-8.912 1.251-13.678-3.731-13.678m0 1c1.89 0 3.39.764 4.225 2.15 1.354 2.251.866 5.824-1.377 10.06-.577 1.092-.673 2.078-.283 2.932.937 2.049 4.758 2.632 6.032 2.928 2.303.534 2.412 1.313 2.401 3.93h-21.998c-.01-2.615.09-3.396 2.401-3.93 1.157-.266 5.138-.919 6.049-2.94.387-.858.284-1.843-.304-2.929-2.231-4.115-2.744-7.764-1.405-10.012.84-1.412 2.353-2.189 4.259-2.189"/></svg>
 <div id="account-dropdown">
 <p>Account Menu</p>
 <ul>
@@ -51,96 +54,106 @@ Log Out
 </div>
 <div id="content">
 <div id="login">
-<div class="login-in">
-<h1>Log In</h1>
-<div class="g-signin2" data-onsuccess="loginReq"></div>
-<!--<input type="password" id="pwLoginInput" onkeyup="if(event.keyCode == 13) { loginReq(document.getElementById(&#39;nameLoginInput&#39;).value, document.getElementById(&#39;pwLoginInput&#39;).value) }" placeholder="Password" data-kwimpalastatus="alive" data-kwimpalaid="1544790793492-3">
-<button onclick="loginReq(document.getElementById(&#39;nameLoginInput&#39;).value, document.getElementById(&#39;pwLoginInput&#39;).value)">
-Submit
-</button>-->
-<p><i>You must login with your NHS school email<br>Use Incognito if Google is being stubborn</i></p>
-</div>
+	<div class="login-in">
+	<h1>Log In</h1>
+	<div class="g-signin2" data-onsuccess="loginReq"></div>
+	<p><i>You must login with your NHS school email<br>Use Incognito if Google is being stubborn</i></p>
+	</div>
 </div>
 <div class="content-logged-in out">
-<div class="modal modal-home">
-<div class="content-send">
-<h3 style="margin-top: 0px;">Document</h3>
-<p style="margin:0.5em 0px 0px 0px;">What are your name(s)?</p>
-<input class="names-submit-input" placeholder="Names" style="background: none; min-width: 8em; max-width: 16em; border: 1px solid black;">
-<p style="margin:0.5em 0px 0px 0px;">What problem are you trying to solve?</p>
-<input class="problem-submit-input" placeholder="Problem" style="background: none; min-width: 8em; max-width: 16em; border: 1px solid black;">
-<p style="margin:0.5em 0px 0px 0px;">What challenges have you faced?</p>
-<input class="challenges-submit-input" placeholder="Challenges" style="background: none; min-width: 8em; max-width: 16em; border: 1px solid black;">
-<p style="margin:0.5em 0px 0px 0px;">Did you solve your problem?</p>
-<div class="what-type-content">
-<label class="button">
-<input type="radio" onchange="document.querySelector('.solve-problem-container').hidden = event.target.checked" name="didsolve" value="0">
-<svg class="unchecked" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M22 2v20h-20v-20h20zm2-2h-24v24h24v-24zm-6 16.538l-4.592-4.548 4.546-4.587-1.416-1.403-4.545 4.589-4.588-4.543-1.405 1.405 4.593 4.552-4.547 4.592 1.405 1.405 4.555-4.596 4.591 4.55 1.403-1.416z"/></svg>
-</label>
-<label class="button">
-<input type="radio" onchange="document.querySelector('.solve-problem-container').hidden = !event.target.checked" name="didsolve" value="1">
-<svg class="checked" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M22 2v20h-20v-20h20zm2-2h-24v24h24v-24zm-5.541 8.409l-1.422-1.409-7.021 7.183-3.08-2.937-1.395 1.435 4.5 4.319 8.418-8.591z"/></svg>
-</label>
-</div>
-<div class="solve-problem-container" hidden>
-<p style="margin:0.5em 0px 0px 0px;">How did you solve your problem?</p>
-<input class="solution-submit-input" placeholder="Solution" style="background: none; min-width: 8em; max-width: 16em; border: 1px solid black;">
-</div>
-<p style="margin:0.5em 0px 0px 0px;">Upload pictures?</p>
-<label class="button">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 9h-6l8-9 8 9h-6v11h-4v-11zm11 11v2h-18v-2h-2v4h22v-4h-2z"/></svg>
-<input class="submit-file-input" type="file" accept="image/*" multiple>
-<div class="file-input-preview">
+	<div class="modal modal-home">
+	<div class="content-send">
+	<h3 style="margin-top: 0px;">Document</h3>
+	<p style="margin:0.5em 0px 0px 0px;">What are your name(s)?</p>
+	<input class="names-submit-input" placeholder="Names" style="background: none; min-width: 8em; max-width: 16em; border: 1px solid black;">
+	<p style="margin:0.5em 0px 0px 0px;">What problem are you trying to solve?</p>
+	<input class="problem-submit-input" placeholder="Problem" style="background: none; min-width: 8em; max-width: 16em; border: 1px solid black;">
+	<p style="margin:0.5em 0px 0px 0px;">What challenges have you faced?</p>
+	<input class="challenges-submit-input" placeholder="Challenges" style="background: none; min-width: 8em; max-width: 16em; border: 1px solid black;">
+	<p style="margin:0.5em 0px 0px 0px;">Did you solve your problem?</p>
+	<div class="what-type-content">
+	<label class="button">
+	<input type="radio" onchange="document.querySelector('.solve-problem-container').hidden = event.target.checked" name="didsolve" value="0">
+	<svg class="unchecked" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M22 2v20h-20v-20h20zm2-2h-24v24h24v-24zm-6 16.538l-4.592-4.548 4.546-4.587-1.416-1.403-4.545 4.589-4.588-4.543-1.405 1.405 4.593 4.552-4.547 4.592 1.405 1.405 4.555-4.596 4.591 4.55 1.403-1.416z"/></svg>
+	</label>
+	<label class="button">
+	<input type="radio" onchange="document.querySelector('.solve-problem-container').hidden = !event.target.checked" name="didsolve" value="1">
+	<svg class="checked" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M22 2v20h-20v-20h20zm2-2h-24v24h24v-24zm-5.541 8.409l-1.422-1.409-7.021 7.183-3.08-2.937-1.395 1.435 4.5 4.319 8.418-8.591z"/></svg>
+	</label>
+	</div>
+	<div class="solve-problem-container" hidden>
+	<p style="margin:0.5em 0px 0px 0px;">How did you solve your problem?</p>
+	<input class="solution-submit-input" placeholder="Solution" style="background: none; min-width: 8em; max-width: 16em; border: 1px solid black;">
+	</div>
+	<p style="margin:0.5em 0px 0px 0px;">Upload pictures?</p>
+	<label class="button">
+	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 9h-6l8-9 8 9h-6v11h-4v-11zm11 11v2h-18v-2h-2v4h22v-4h-2z"/></svg>
+	<input class="submit-file-input" type="file" accept="image/*" multiple>
+	<div class="file-input-preview">
 
-</div>
-</label>
-<p style="margin:1em 0px 0px 0px;">What team?</p>
-<div class="what-type-content">
-<label data-children-count="1" class="button">
-<input type="radio" name="what_team" value="0">
-<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M16 3.383l-.924-.383-7.297 17.617.924.383 7.297-17.617zm.287 3.617l6.153 4.825-6.173 5.175.678.737 7.055-5.912-7.048-5.578-.665.753zm-8.478 0l-6.249 4.825 6.003 5.175-.679.737-6.884-5.912 7.144-5.578.665.753z"></path></svg>
-</label>
-<label data-children-count="1" class="button">
-<input type="radio" name="what_team" value="1">
-<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M15 7h4v5h5v6h-5v5h-19v-21h15v5zm-5 11h-9v4h9v-4zm8 0h-7v4h7v-4zm-11-5h-6v4h6v-4zm9 0h-8v4h8v-4zm7 0h-6v4h6v-4zm-12-5v4h7v-4h-7zm-1 0h-9v4h9v-4zm-3-5h-6v4h6v-4zm7 0h-6v4h6v-4z"></path></svg>
-</label>
-<label data-children-count="1" class="button">
-<input type="radio" name="what_team" value="2">
-<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 1c6.071 0 11 4.929 11 11s-4.929 11-11 11-11-4.929-11-11 4.929-11 11-11zm.053 17c.466 0 .844-.378.844-.845 0-.466-.378-.844-.844-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.468-2.822h-.998c-.035-1.162.182-2.054.939-2.943.491-.57 1.607-1.479 1.945-2.058.722-1.229.077-3.177-2.271-3.177-1.439 0-2.615.877-2.928 2.507l-1.018-.102c.28-2.236 1.958-3.405 3.922-3.405 1.964 0 3.615 1.25 3.615 3.22 0 1.806-1.826 2.782-2.638 3.868-.422.563-.555 1.377-.568 2.09z"></path></svg>
-</label>
-</div>
-<button style="margin-top: 1em;" onclick="formatAndSubmit()">
-Send
-</button>
-</div>
-<div class="postlist">
-</div>
-</div>
-<div class="modal out modal-permedit">
+	</div>
+	</label>
+	<p style="margin:1em 0px 0px 0px;">What team?</p>
+	<div class="what-type-content">
+	<label data-children-count="1" class="button">
+	<input type="radio" name="what_team" value="0">
+	<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" title="Software" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M16 3.383l-.924-.383-7.297 17.617.924.383 7.297-17.617zm.287 3.617l6.153 4.825-6.173 5.175.678.737 7.055-5.912-7.048-5.578-.665.753zm-8.478 0l-6.249 4.825 6.003 5.175-.679.737-6.884-5.912 7.144-5.578.665.753z"></path></svg>
+	</label>
+	<label data-children-count="1" class="button">
+	<input type="radio" name="what_team" value="1">
+	<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" title="Hardware" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M15 7h4v5h5v6h-5v5h-19v-21h15v5zm-5 11h-9v4h9v-4zm8 0h-7v4h7v-4zm-11-5h-6v4h6v-4zm9 0h-8v4h8v-4zm7 0h-6v4h6v-4zm-12-5v4h7v-4h-7zm-1 0h-9v4h9v-4zm-3-5h-6v4h6v-4zm7 0h-6v4h6v-4z"></path></svg>
+	</label>
+	<label data-children-count="1" class="button">
+	<input type="radio" name="what_team" value="2">
+	<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" title="Other" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 1c6.071 0 11 4.929 11 11s-4.929 11-11 11-11-4.929-11-11 4.929-11 11-11zm.053 17c.466 0 .844-.378.844-.845 0-.466-.378-.844-.844-.844-.466 0-.845.378-.845.844 0 .467.379.845.845.845zm.468-2.822h-.998c-.035-1.162.182-2.054.939-2.943.491-.57 1.607-1.479 1.945-2.058.722-1.229.077-3.177-2.271-3.177-1.439 0-2.615.877-2.928 2.507l-1.018-.102c.28-2.236 1.958-3.405 3.922-3.405 1.964 0 3.615 1.25 3.615 3.22 0 1.806-1.826 2.782-2.638 3.868-.422.563-.555 1.377-.568 2.09z"></path></svg>
+	</label>
+	</div>
+	<button style="margin-top: 1em;" onclick="formatAndSubmit()">
+	Send
+	</button>
+	</div>
+	<div class="postlist inhome">
+	</div>
+	</div>
+	<div class="modal out modal-permedit">
 
-<div>
-<h3>Permission Edit</h3>
-<table id="permedit-table">
-<tr><th>Email ID</th><th>Role Number(<a href="/abt_roles.txt" target="_blank">?</a>)</th></tr>
-</table>
-</div>
+	<div>
+	<h3>Permission Edit</h3>
+	<table id="permedit-table">
+	<tr><th>Email ID</th><th>Role Number(<a href="/abt_roles.txt" target="_blank">?</a>)</th></tr>
+	</table>
+	</div>
 
-</div>
-<div class="modal out modal-candybank">
+	</div>
+	<div class="modal out modal-candybank">
 
-<div>
-<h3>Candy Bank</h3>
-<table id="candy-credit-table">
-<tr><th>Email ID</th><th>Candy Balance</th></tr>
-</table>
-</div>
+	<div>
+	<h3>Candy Bank</h3>
+	<table id="candy-credit-table">
+	<tr><th>Email ID</th><th>Candy Balance</th></tr>
+	</table>
+	</div>
 
-</div>
-<div class="modal out modal-table-copy">
-<div style="min-height: -webkit-min-content; min-height: -moz-min-content; min-height: min-content;"><h3><a href="javascript:void(0)" onclick="copyToClip(document.getElementById('output-preview').innerHTML, true)">Copy Data</a></h3> <br>After copying, you can simply paste (CTRL + V) into Google Docs!</div>
+	</div>
+	<div class="modal out modal-table-copy">
+<div style="min-height: -webkit-min-content; min-height: -moz-min-content; min-height: min-content;"><h3><a href="javascript:void(0)" onclick="copyToClip(document.getElementById('output-preview').innerHTML, true)">Copy Data</a></h3> <p>After copying, you can simply paste (CTRL + V) into Google Docs!</p></div>
 
 <div style="min-height: -webkit-min-content; min-height: -moz-min-content; min-height: min-content; min-width: -webkit-min-content; min-width: -moz-min-content; min-width: min-content;"><h3>Preview: </h3><div id="output-preview" style="padding: 10px; border: 1px solid black; background: #ffffff;"></div></div>
 </div>
+	<div class="modal out modal-archive">
+		<div>
+			<h3>Documentation Archive</h3>
+			<p>Enter Date to Retrieve From:</p>
+			<input type="date" id="archive-data-input">
+			<p>
+				<button id="archive-init-button" onclick="archiveSearch();">
+				  Go
+				</button>
+			</p>
+			
+		</div>
+		<div class="postlist" id="archive-postlist"></div>
+	</div>
 </div>
 </div>
 <script>

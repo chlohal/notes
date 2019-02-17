@@ -1,6 +1,6 @@
 module.exports = function(commits, callback) {
 	//var docs = docsClient;
-    var html = `<div style="color:black;background:none;font-family:'Times New Roman', serif;font-size:12pt;"><span style="background-color: rgb(255, 0, 000);">This is a custom generated document.</span><br>`;
+    var html = `<div style="color:black;background:none;font-family:'Times New Roman', serif;font-size:12pt;"><span style="background-color: rgb(237,158,144);">This is an automatically generated document. Any manual changes may be overwritten.</span><br>`;
     // > split the array into days
     var commitDays = [];
     commits.forEach(function(commitObject) {

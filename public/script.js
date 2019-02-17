@@ -14,7 +14,6 @@ var prof = usr.getBasicProfile();
   xhr.open('POST', '/api/createUser');
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onload = function() {
-    console.log('Signed in as: ' + xhr.responseText);
     if(xhr.status == 200 || xhr.status == 201) {
       var rJSON = JSON.parse(xhr.responseText);
       localStorage.setItem('token',rJSON.token);
@@ -29,10 +28,8 @@ var prof = usr.getBasicProfile();
 		if(JSON.parse(localStorage.getItem('self')).role >= 4) { document.querySelector('.permedit-button').hidden = false; }
 		if(JSON.parse(localStorage.getItem('self')).role >= 4) { document.querySelector('.output-button').hidden = false; }
 	  } catch(e) {}
-	  reload(0);
     }
   };
-  console.log({"type":0,"token":tkn,"googleid":prof.getId()});
   xhr.send(JSON.stringify({"type":0,"token":tkn,"googleid":prof.getId()}));
 }
 function openHome() {
@@ -52,7 +49,8 @@ function openHome() {
 function formatAndSubmit() {
 	
 	var haderror = false, notifiedUserOfError = false, submission = {}, base64Array = [];
-	
+	//make sure we're allowed to submit
+	if(JSON.parse(localStorage.getItem('self')).role < 7) return snackbar('You are not allowed to submit! Ask an admin to change your role',3000,'err')
 	//load Base64 files
 	var fileInput = document.querySelector('.submit-file-input');
 	
@@ -133,15 +131,40 @@ req.setRequestHeader("Content-Type", "application/json");
 
 req.send(JSON.stringify({d: x}));
 }
-
-function reload(x,fromTime,toTime) {
+function archiveSearch() {
+	var dateInput = document.getElementById('archive-data-input');
+	if(!dateInput) return 0
+	var dateObjOfDate = new Date(dateInput.value.split('-'));
+	
+	var fromNum = dateObjOfDate.setHours(0,0,0,0);
+	var toNum = dateObjOfDate.setHours(23,59,59,999);
+	
+	var parentElementForTheResults = document.getElementById('archive-postlist');
+	if(!parentElementForTheResults) return 0
+	
+	reload(0,fromNum,toNum,parentElementForTheResults, true, function(results) {
+		if(!results[0]) { snackbar('No results found for that day',2000,'err')}
+		else if(JSON.parse(localStorage.getItem('self')).role >= 7) {
+			document.querySelectorAll('#archive-postlist > div').forEach(elem => {
+				var delLink = document.createElement('a');
+				delLink.classList.add('contextmenu');
+				delLink.href = 'javascript:void(0)';
+				delLink.onclick = function() { deleteDoc(elem.getAttribute('data-docid')) }
+				delLink.innerHTML = '<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;" title="Delete" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd"><path d="M9 3h6v-1.75c0-.066-.026-.13-.073-.177-.047-.047-.111-.073-.177-.073h-5.5c-.066 0-.13.026-.177.073-.047.047-.073.111-.073.177v1.75zm11 1h-16v18c0 .552.448 1 1 1h14c.552 0 1-.448 1-1v-18zm-10 3.5c0-.276-.224-.5-.5-.5s-.5.224-.5.5v12c0 .276.224.5.5.5s.5-.224.5-.5v-12zm5 0c0-.276-.224-.5-.5-.5s-.5.224-.5.5v12c0 .276.224.5.5.5s.5-.224.5-.5v-12zm8-4.5v1h-2v18c0 1.105-.895 2-2 2h-14c-1.105 0-2-.895-2-2v-18h-2v-1h7v-2c0-.552.448-1 1-1h6c.552 0 1 .448 1 1v2h7z"/></svg>';
+				elem.appendChild(delLink);
+				generateTooltip(delLink.firstElementChild);
+			});
+		}
+	});
+}
+function reload(x,fromTime,toTime,todaysParentElement,onlyUseThisData,cb) {
 
 var req = new XMLHttpRequest();
 
 req.onreadystatechange = function() {
 if(req.readyState == 4) {
  if(req.status == 200) {
-     var uploadList = document.querySelector('.postlist');
+     var uploadList = todaysParentElement||document.querySelector('div.inhome.postlist');
 	 var parsedResp = JSON.parse(req.responseText);
 	 var eventualHtml = '';
 
@@ -151,7 +174,7 @@ if(req.readyState == 4) {
 	 
 	 
 	 
-	 Object.values(totalDocs).sort(function(a,b) {return b.creationDate - a.creationDate}).forEach(x => {
+	 (onlyUseThisData?parsedResp:(Object.values(totalDocs))).sort(function(a,b) {return b.creationDate - a.creationDate}).forEach(x => {
 		 
 		 //make string for pictures
 		 var picturestring = '<div class="file-input-preview" style="display: flex;">';
@@ -165,9 +188,11 @@ if(req.readyState == 4) {
 	     eventualHtml = eventualHtml + "<div" + ((x.creator == localStorage.getItem('id'))?(' class="my-doc" data-docid="'+x.id+'"'):'') + "><div>Team: <span class=\"editable-in-edit-mode edit-dropdown\">" + (((["Software","Hardware","Other"])[x.isonteam]) || 'Error') + "</span></div><div>People Responsible: <span class=\"editable-in-edit-mode\">" + x.humannames.HTML() + '</span></div><div> Problem: <span class=\"editable-in-edit-mode\">' + (x.problem||'').HTML() + '</span></div><div> Challenges: <span class=\"editable-in-edit-mode\">' + x.challenges.HTML() + '</span></div>'+ (x.didsolve?'<div> Solution: <span class=\"editable-in-edit-mode\">' + (x.solution||'').HTML() + '</span></div>':'')+ (x.picture1?picturestring:'') +'</div>'
 	 });
 	 
+	 
 	 //currentIndex = parsedResp.length
 	 
 	 uploadList.innerHTML = eventualHtml;
+	 if(typeof cb == 'function') cb(parsedResp);
  } else if (req.status == 403) {
      signOut();
  }
@@ -176,13 +201,11 @@ if(req.readyState == 4) {
 
 req.onerror = function() {
     snackbar('There was an error. Try again later',3000,'err');
-     reloadanimelem.innerHTML = '<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" viewBox="0 0 24 24" clip-rule="evenodd"><path d="M7 9h-7v-7h1v5.2c1.853-4.237 6.083-7.2 11-7.2 6.623 0 12 5.377 12 12s-5.377 12-12 12c-6.286 0-11.45-4.844-11.959-11h1.004c.506 5.603 5.221 10 10.955 10 6.071 0 11-4.929 11-11s-4.929-11-11-11c-4.66 0-8.647 2.904-10.249 7h5.249v1z"/></svg>'
-
 }
 
 var dateSoWeCanDoDatishOperations = new Date(Date.now());
 
-req.open("GET", "/api/docs/bytime?n=50&b=" + dateSoWeCanDoDatishOperations.setHours(0,0,0,0) + "&a=" + dateSoWeCanDoDatishOperations.setHours(23,59,59,999) );
+req.open("GET", "/api/docs/bytime?n=50&b=" + (fromTime||dateSoWeCanDoDatishOperations.setHours(0,0,0,0)) + "&a=" + (toTime||dateSoWeCanDoDatishOperations.setHours(23,59,59,999)) );
 
 req.setRequestHeader("Authorization", localStorage.getItem('id') + ':' + localStorage.getItem('token'));
 
@@ -203,12 +226,10 @@ function openCandyBank() {
 	history.replaceState(null, '', "?" + search.toString());
 	
 	//load data
-	snackbar('Loading data from server...');
 	var req = new XMLHttpRequest();
 	
 	req.onload = function() {
 		if(req.status == 200) {
-			snackbar('Candy credit data reloaded!',1000);
 			candyBankData = JSON.parse(req.responseText);
 			
 			var table = document.getElementById('candy-credit-table');
@@ -274,12 +295,10 @@ function openPermedit() {
 	history.replaceState(null, '', "?" + search.toString());
 	
 	//load data
-	snackbar('Loading data from server...');
 	var req = new XMLHttpRequest();
 	
 	req.onload = function() {
 		if(req.status == 200) {
-			snackbar('Permission data reloaded!',1000);
 			permissionData = JSON.parse(req.responseText);
 			
 			var table = document.getElementById('permedit-table');
@@ -344,6 +363,37 @@ function loadEditingAndSuch(cb) {
 		});
 	});
 }
+function deleteDoc(docid) {
+	var req = new XMLHttpRequest();
+	req.open("DELETE", "/api/commits?id=" + docid);
+	
+	req.onload = function() {
+		if(req.status == 200) {
+			snackbar('Deleted!');
+			archiveSearch();
+		} else req.onerror()
+	}
+	req.onerror = function() {
+		snackbar('Error in deleting',3000,'err');
+	}
+	req.setRequestHeader("Authorization", localStorage.getItem('id') + ':' + localStorage.getItem('token'));
+	
+	req.send();
+}
+function openArchivePanel() {
+	document.querySelector('.archive-button > svg').style.background = '#000000'
+    document.querySelector('.archive-button > svg').style.fill = '#ffffff'
+	document.querySelector('.content-logged-in').style.overflowY = 'hidden'
+	document.querySelector('.content-logged-in').scrollTop = 0
+    var container = document.querySelector('.modal-archive');
+	container.classList.remove('out');
+	container.scrollTop = 0
+    modalOpen = true
+	var search = new URLSearchParams(location.search);
+	search.set('open','archive');
+	history.replaceState(null, '', "?" + search.toString());
+	archiveSearch();
+}
 function downloadParse() {
 
     
@@ -358,8 +408,6 @@ function downloadParse() {
 	var search = new URLSearchParams(location.search);
 	search.set('open','download');
 	history.replaceState(null, '', "?" + search.toString());
-	
-	snackbar('Loading exported data from server',1500);
 	
 	var req = new XMLHttpRequest();
 	
@@ -425,7 +473,7 @@ function snackbar(t,d,y) {
 //open modal from query string on load
 window.addEventListener('load', function() {
 	var query = (new URL(document.location)).searchParams;
-	if(!query.has('open')) { return }
+	if(!query.has('open')) { return openHome(); }
 	switch(query.get('open')) {
 		case 'candybank':
 		    openCandyBank();
@@ -435,6 +483,9 @@ window.addEventListener('load', function() {
 		break
 		case 'download':
 			downloadParse();
+		break
+		case 'archive':
+			openArchivePanel();
 		break
 	        default:
                         openHome();
@@ -484,6 +535,8 @@ window.addEventListener('load', function() {
 		accountDropdownMenuOpen = !accountDropdownMenuOpen;
 	});
 	
+	(function()  {d=(new Date()); document.getElementById('archive-data-input').value = d.getFullYear() + '-' + (d.getMonth()+1<10?'0'+(d.getMonth()+1):d.getMonth()+1) + '-' + (d.getDate()<10?'0'+d.getDate():d.getDate()) })()
+
 	document.querySelectorAll('input[type=file').forEach(elem => {
 		elem.addEventListener('change', function(e) {
 			var previewDiv = elem.nextElementSibling;
@@ -517,8 +570,45 @@ window.addEventListener('load', function() {
 		});
 		
 	});
-})
-
+});
+//add tooltips
+function generateTooltip(elem) {
+	var titletext = elem.getAttribute('title');
+		elem.setAttribute('title','');
+		
+		if(elem.style.position == "") elem.style.position = 'relative';
+		var tooltipElem = document.createElement('div');
+		
+		tooltipElem.classList.add('tooltip');
+		tooltipElem.innerHTML = titletext;
+		document.body.appendChild(tooltipElem);
+		
+		tooltipElem.addEventListener('mouseover',function(e) {
+			e.stopPropagation;
+		});
+		
+		elem.addEventListener('mouseover', function() {
+			tooltipElem.style.display = 'inline-block';
+			elem.title = '';
+			
+			var newElemPos = elem.getBoundingClientRect();
+			
+			tooltipElem.style.left = newElemPos.left + ((elem.clientWidth-tooltipElem.clientWidth)/2);
+			
+			if(newElemPos.top < tooltipElem.clientHeight * 2) {
+				tooltipElem.style.top = newElemPos.top + newElemPos.height + 5;
+			} else {
+				tooltipElem.style.top = newElemPos.top - tooltipElem.clientHeight - 5;
+			}
+		});
+		elem.addEventListener('mouseout', function() {
+			tooltipElem.style.display = 'none';
+		});
+}
+window.addEventListener('load', function() {
+	document.querySelectorAll('*[title]').forEach(generateTooltip);
+	
+});
 function fileToBase64(file,cb) {
    var reader = new FileReader();
    reader.readAsDataURL(file);
@@ -543,13 +633,3 @@ function copyToClip(str,notify) {
   document.removeEventListener("copy", listener);
 };
 
-function editMode() {
-    document.querySelectorAll('.my-doc > div > .editable-in-edit-mode').forEach(x => {
-	    x.contentEditable = true;
-		x.style.border = '1px solid black'
-	});
-    document.querySelectorAll('.my-doc > div > .editable-in-edit-mode.edit-dropdown').forEach(x => {
-	    x.innerHTML = '<select><option>Software</option><option>Hardware</option><option>Other</option>'
-	});
-    
-}
